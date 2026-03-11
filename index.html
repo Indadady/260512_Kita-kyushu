@@ -102,10 +102,10 @@
                         <a href="#flight" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition-colors">항공/수속</a>
                         <a href="#map-section" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition-colors">연수동선</a>
                         <a href="#schedule" class="px-3 py-2 text-sm font-bold text-emerald-600 hover:bg-slate-50 rounded-lg transition-colors"><i class="fa-solid fa-calendar-check mr-1"></i>상세일정</a>
-                        <a href="#hotel" class="px-3 py-2 text-sm font-bold text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors"><i class="fa-solid fa-bed mr-1"></i>숙소/의전</a>
+                        <a href="#hotel" class="px-3 py-2 text-sm font-bold text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors"><i class="fa-solid fa-bed mr-1"></i>숙소/이동</a>
                         <a href="#video" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition-colors">영상자료</a>
                         <a href="#check" class="px-3 py-2 text-sm font-medium text-slate-600 hover:text-emerald-600 hover:bg-slate-50 rounded-lg transition-colors">준비물</a>
-                        <a href="#contact" class="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors">안전/비상</a>
+                        <a href="#contact" class="px-3 py-2 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors">비상연락</a>
                     </div>
                 </div>
 
@@ -167,14 +167,14 @@
                         <span class="inline-block border border-blue-600 text-blue-700 text-xs px-3 py-1.5 rounded-full font-bold">자원 순환 경제 모델</span>
                     </div>
 
-                    <!-- Point 3 -->
+                    <!-- Point 3 (의전 뉘앙스 제거, 행정/업무 집중으로 포장) -->
                     <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 group">
-                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform text-slate-700 text-3xl">💼</div>
-                        <h3 class="text-xl font-bold text-slate-800 mb-3">안전하고 쾌적한 전용 VIP 의전</h3>
+                        <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform text-slate-700 text-3xl">🚐</div>
+                        <h3 class="text-xl font-bold text-slate-800 mb-3">업무 집중을 위한 이동 시스템</h3>
                         <p class="text-slate-600 text-sm leading-relaxed mb-5">
-                            공무 일정의 피로도를 최소화하기 위해 6인 단독 행사에 최적화된 <strong class="text-slate-800">8인승 하이에이스(단독 차량)</strong>와 <strong>전문 드라이빙 가이드</strong>를 배정했습니다. 노쇼핑 진행으로 연수 목적에만 100% 집중할 수 있는 환경을 보장합니다.
+                            공무 연수 일정의 피로도를 최소화하고 정해진 기관 방문 시간을 엄수하기 위해 6인 단독 행사에 맞춘 <strong class="text-slate-800">8인승 차량</strong>과 연수 전문 가이드를 배정했습니다. 불필요한 일정을 배제하여 목적에만 100% 집중할 수 있습니다.
                         </p>
-                        <span class="inline-block border border-slate-600 text-slate-700 text-xs px-3 py-1.5 rounded-full font-bold">노쇼핑 & 단독차량</span>
+                        <span class="inline-block border border-slate-600 text-slate-700 text-xs px-3 py-1.5 rounded-full font-bold">효율적 동선 관리</span>
                     </div>
                 </div>
             </div>
@@ -218,15 +218,16 @@
                 <div class="text-center mb-8">
                     <span class="text-emerald-600 font-black tracking-widest text-xs uppercase">ROUTING MAP</span>
                     <h2 class="text-3xl font-bold text-slate-800 tracking-tight mt-2">연수 및 탐방 동선</h2>
-                    <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 이동 경로를 직관적으로 확인하세요.</p>
+                    <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 전체 이동 경로와 숙소 위치를 확인하세요.</p>
                 </div>
 
+                <!-- 일자별 맵 컨트롤 버튼 (환경테마 텍스트로 보완) -->
                 <div class="flex flex-wrap justify-center gap-2 mb-6 px-2" id="map-controls">
                     <button onclick="changeMapRoute('all')" class="map-btn active px-5 py-2 rounded-full border border-slate-300 bg-emerald-700 text-white text-sm font-bold transition shadow-md">전체 여정</button>
                     <button onclick="changeMapRoute('day1')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">1일차</button>
                     <button onclick="changeMapRoute('day2')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">2일차(기관방문)</button>
-                    <button onclick="changeMapRoute('day3')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">3일차</button>
-                    <button onclick="changeMapRoute('day4')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">4일차</button>
+                    <button onclick="changeMapRoute('day3')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">3일차(생태보전)</button>
+                    <button onclick="changeMapRoute('day4')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">4일차(지질·수문)</button>
                 </div>
 
                 <div class="max-w-5xl mx-auto border border-slate-200 rounded-2xl p-1 shadow-lg bg-white relative">
@@ -285,7 +286,7 @@
                                     <div class="timeline-dot bg-emerald-500 ring-emerald-100"></div>
                                     <h4 class="font-bold text-lg text-slate-800">🛬 17:15 기타큐슈 공항 도착</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        입국 수속을 마치고 전용차량(8인승 하이에이스) 및 드라이빙 가이드와 미팅 후 시내로 이동합니다.
+                                        입국 수속을 마치고 전용차량(8인승) 및 연수 전문 가이드와 미팅 후 시내로 이동합니다.
                                     </p>
                                 </div>
 
@@ -384,6 +385,14 @@
                                         단순 관광을 넘어 생태 보전의 현장을 찾습니다. <strong>초자바루 비지터센터</strong>에서 아소쿠주 국립공원의 지형과 생태계 해설 전시를 견학합니다. 이어 람사르협약 등록 습지인 <strong>타데하라습지</strong>의 목도를 직접 걸으며 독특한 식생과 생태계 보전 모델을 벤치마킹합니다.
                                     </p>
                                 </div>
+
+                                <div class="relative">
+                                    <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🌉 유메오츠리바시(꿈의 대현수교)</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        보행자 전용 다리로 일본 최대 높이와 길이를 자랑하는 현수교를 건너며 웅장한 자연 경관을 체험합니다.
+                                    </p>
+                                </div>
                                 
                                 <div class="relative">
                                     <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
@@ -414,6 +423,22 @@
                             <div class="relative border-l-2 border-slate-200 ml-4 pl-8 space-y-8">
                                 <div class="relative">
                                     <div class="timeline-dot bg-slate-500 ring-slate-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🏯 기타큐슈 고쿠라성 & 가라토 시장</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        기타큐슈를 대표하는 명소 <strong>고쿠라성(외부 관람)</strong>을 둘러보고, 간몬 해협을 건너 야마구치현 시모노세키의 활기찬 수산 시장인 <strong>가라토 시장</strong>을 탐방하며 현지 상업 문화를 체험합니다.
+                                    </p>
+                                </div>
+                                
+                                <div class="relative">
+                                    <div class="timeline-dot bg-slate-500 ring-slate-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800">🤝 아카마 신궁 & 조선통신사 상륙기념비</h4>
+                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
+                                        조선시대 한일 외교와 문화 교류를 위해 파견된 공식 사절단인 조선통신사가 객관으로 머물던 <strong>아카마 신궁</strong>과 그 역사를 기리는 <strong>상륙기념비</strong>를 방문하여 양국의 역사적 교류 흔적을 확인합니다.
+                                    </p>
+                                </div>
+                                
+                                <div class="relative">
+                                    <div class="timeline-dot bg-slate-500 ring-slate-100"></div>
                                     <h4 class="font-bold text-lg text-slate-800 mt-6 pt-4 border-t border-slate-200">🪨 미네 지질·자연유산 탐방 (아키요시다이 & 아키요시동굴)</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
                                         미네시로 이동(약 1시간)하여 일본 최대급 카르스트 지형이자 특별천연기념물인 <strong>아키요시다이</strong>를 조망합니다. 이어서 거대한 석회동굴인 <strong>아키요시동굴</strong> 내부를 탐방하며 3억 년에 걸친 지질 형성 과정과 지하수계(수문) 생태계 보전 사례를 환경과 관점에서 집중 연구합니다.
@@ -432,47 +457,50 @@
             </div>
         </section>
 
-        <!-- Accommodations & Transport -->
+        <!-- Accommodations & Transport (의전 뉘앙스 배제) -->
         <section id="hotel" class="py-16 bg-white border-t border-slate-200">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-10">
-                    <span class="text-teal-600 font-black tracking-widest text-xs uppercase">VIP SERVICES</span>
-                    <h2 class="text-3xl font-bold text-slate-800 mt-2">숙박 및 전용 의전 차량</h2>
-                    <p class="text-sm text-slate-500 mt-2">출장의 피로를 덜어드릴 편안한 휴식처와 전용 이동 수단입니다.</p>
+                    <span class="text-teal-600 font-black tracking-widest text-xs uppercase">ACCOMMODATION & TRANSPORT</span>
+                    <h2 class="text-3xl font-bold text-slate-800 mt-2">숙소 및 이동 차량 안내</h2>
+                    <p class="text-sm text-slate-500 mt-2">연수 기간 동안 머무실 숙소와 원활한 동선을 위한 차량 정보입니다.</p>
                 </div>
 
                 <div class="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                     <!-- Hotel 1 -->
                     <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group">
                         <div class="h-40 bg-slate-200 relative overflow-hidden">
+                            <!-- 모지코 사진 적용 -->
                             <img src="https://tse4.mm.bing.net/th/id/OIP.magjq_me9iGLkGjrByjZXwHaES?w=474&h=474&c=7&p=0" alt="Hotel" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                             <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">1일차 숙박</div>
                         </div>
                         <div class="p-5">
                             <h4 class="font-bold text-slate-800">프리미어호텔 모지코 (동급)</h4>
-                            <p class="text-xs text-slate-500 mt-1">기타큐슈 레트로 지구의 클래식한 명품 호텔</p>
+                            <p class="text-xs text-slate-500 mt-1">기타큐슈 레트로 지구 위치</p>
                         </div>
                     </div>
                     <!-- Hotel 2 -->
                     <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group">
                         <div class="h-40 bg-slate-200 relative overflow-hidden">
+                            <!-- 풍월호텔 사진 적용 -->
                             <img src="https://tse1.mm.bing.net/th/id/OIP.ww0VoTsOUeHHcZ_cNMxwjwHaFV?w=474&h=474&c=7&p=0" alt="Onsen Hotel" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                             <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">2일차 숙박</div>
                         </div>
                         <div class="p-5">
                             <h4 class="font-bold text-slate-800">오오에도 풍월호텔 (동급)</h4>
-                            <p class="text-xs text-slate-500 mt-1">벳부 온천욕을 즐길 수 있는 전통과 현대의 조화</p>
+                            <p class="text-xs text-slate-500 mt-1">벳부 온천 지역 위치</p>
                         </div>
                     </div>
                     <!-- Hotel 3 -->
                     <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group">
                         <div class="h-40 bg-slate-200 relative overflow-hidden">
+                            <!-- 무나가타 호텔 사진 적용 -->
                             <img src="https://tse4.mm.bing.net/th/id/OIP.Dw7bG91zkPb0CTrS00XFZgHaE8?w=474&h=474&c=7&p=0" alt="Resort" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                             <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">3일차 숙박</div>
                         </div>
                         <div class="p-5">
                             <h4 class="font-bold text-slate-800">머큐어 무나가타 호텔 (동급)</h4>
-                            <p class="text-xs text-slate-500 mt-1">자연 경관 속에서 여유를 만끽하는 글로벌 리조트</p>
+                            <p class="text-xs text-slate-500 mt-1">무나가타 외곽 리조트형 숙소</p>
                         </div>
                     </div>
                 </div>
@@ -482,9 +510,9 @@
                         <i class="fa-solid fa-van-shuttle"></i>
                     </div>
                     <div>
-                        <h4 class="font-bold text-teal-900 text-lg mb-1">단독 8인승 하이에이스 & 드라이빙 가이드</h4>
+                        <h4 class="font-bold text-teal-900 text-lg mb-1">단독 8인승 차량 & 연수 전문 가이드</h4>
                         <p class="text-sm text-teal-800 leading-relaxed">
-                            정선군청 6인 연수팀만을 위한 단독 차량(Toyota Hiace 동급)이 배정됩니다. 대형 버스나 대중교통 이용의 번거로움 없이, <strong>원하는 목적지 문 앞까지 가장 효율적인 동선으로 안내</strong>하는 전문 드라이빙 가이드가 전 일정 밀착 동행하여 통역과 의전을 완벽하게 지원합니다.
+                            정선군청 6인 연수팀의 효율적인 동선 관리를 위해 단독 차량(Toyota Hiace 동급)이 배정됩니다. 정해진 기관 방문 시간을 철저히 준수하고, 대중교통 이용의 번거로움 없이 <strong>목적지 간 최적의 경로로 이동</strong>할 수 있도록 연수 전문 가이드가 밀착 동행하여 통역과 일정을 지원합니다.
                         </p>
                     </div>
                 </div>
@@ -647,7 +675,7 @@
                     </td>
                     <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
                         <strong>15:45 인천국제공항 출발 ✈️ 17:15 기타큐슈 공항 도착</strong><br>
-                        ▶ 입국 수속 및 전문 드라이빙 가이드 미팅 (8인승 하이에이스 탑승)<br>
+                        ▶ 입국 수속 및 연수 전문 가이드 미팅 (8인승 차량 탑승)<br>
                         ▶ 석식 후 호텔로 이동<br>
                         ▶ <strong>호텔 투숙 및 휴식</strong> (프리미어호텔 모지코 또는 동급)
                     </td>
@@ -691,6 +719,7 @@
                         ▶ <strong>유후인 민예촌:</strong> 전통 거리 및 지역 상권 시찰<br>
                         ▶ 고코노에로 이동 (약 40분)<br>
                         ▶ <strong>초자바루 비지터센터 & 타데하라습지:</strong> 국립공원 생태 해설 견학 및 람사르 등록 습지 보전 사례 연구<br>
+                        ▶ <strong>유메오츠리바시(꿈의 대현수교):</strong> 보행자 전용 대형 현수교 및 자연 경관 체험<br>
                         ▶ 후쿠오카 이동 (약 2시간) / <strong>하카타 타워</strong> 360도 도심 조망 및 면세점 방문<br>
                         ▶ 무나가타 이동 (약 50분) 및 <strong>호텔 투숙</strong> (머큐어 무나가타 호텔 또는 동급)
                     </td>
@@ -830,54 +859,68 @@
             window.addEventListener('resize', autoResize);
         })();
 
-        // Map Route & Layer Logic (큐슈 북부 동선 최적화)
+        // Map Route & Layer Logic (동선 풍성하게 숙소 포함 및 애니메이션 적용)
         let map;
         let mapLayers = [];
 
         const spots = {
-            // Main Hubs
+            // Main Hubs & Airports
             kkj: { coords: [33.8385, 130.9472], title: "기타큐슈 공항", color: "#64748b", icon: "✈️" },
-            kitakyushu: { coords: [33.943, 130.962], title: "기타큐슈 (신모지, 에코타운)", color: "#2563eb", icon: "1️⃣" },
-            beppu: { coords: [33.280, 131.482], title: "벳부 (온천, 숙소)", color: "#f59e0b", icon: "2️⃣" },
-            yufuin: { coords: [33.264, 131.361], title: "유후인/고코노에", color: "#f59e0b", icon: "3️⃣" },
-            fukuoka: { coords: [33.606, 130.402], title: "후쿠오카 타워/시내", color: "#f59e0b", icon: "🏙️" },
-            munakata: { coords: [33.805, 130.540], title: "무나가타 (숙소)", color: "#f59e0b", icon: "🏨" },
-            shimonoseki: { coords: [33.957, 130.943], title: "시모노세키 (가라토, 아카마)", color: "#16a34a", icon: "4️⃣" },
-            mine: { coords: [34.240, 131.300], title: "미네 (아키요시다이)", color: "#16a34a", icon: "🪨" }
+            
+            // Day 1
+            hotel_mojiko: { coords: [33.945, 130.963], title: "1일차 숙소 (모지코)", color: "#1e293b", icon: "🏨", isSub: true },
+            
+            // Day 2
+            shinmoji: { coords: [33.911, 131.002], title: "신모지 소각장", color: "#dc2626", icon: "🏭", isSub: true },
+            ecotown: { coords: [33.924, 130.826], title: "기타큐슈 에코타운", color: "#dc2626", icon: "♻️", isSub: true },
+            beppu_tour: { coords: [33.315, 131.472], title: "벳부 지옥온천/유노하나", color: "#2563eb", icon: "♨️", isSub: true },
+            hotel_fugetsu: { coords: [33.308, 131.482], title: "2일차 숙소 (벳부 풍월)", color: "#1e293b", icon: "🏨", isSub: true },
+            
+            // Day 3
+            yufuin: { coords: [33.264, 131.361], title: "유후인 긴린코 호수", color: "#f59e0b", icon: "🏞️", isSub: true },
+            kokonoe: { coords: [33.111, 131.233], title: "타데하라습지/유메오츠리바시", color: "#f59e0b", icon: "🌿", isSub: true },
+            fukuoka: { coords: [33.606, 130.402], title: "후쿠오카 시내", color: "#f59e0b", icon: "🏙️", isSub: true },
+            hotel_munakata: { coords: [33.805, 130.540], title: "3일차 숙소 (무나가타)", color: "#1e293b", icon: "🏨", isSub: true },
+            
+            // Day 4
+            kokura: { coords: [33.883, 130.873], title: "고쿠라성", color: "#16a34a", icon: "🏯", isSub: true },
+            shimonoseki: { coords: [33.957, 130.943], title: "가라토 시장/아카마 신궁", color: "#16a34a", icon: "🤝", isSub: true },
+            mine: { coords: [34.240, 131.300], title: "미네 (아키요시다이)", color: "#16a34a", icon: "🪨", isSub: true }
         };
 
+        // 지도 동선 배열 구성 (호텔 경유)
         const routes = {
             all: {
-                points: ['kkj', 'kitakyushu', 'beppu', 'yufuin', 'fukuoka', 'munakata', 'shimonoseki', 'mine'],
+                points: ['kkj', 'hotel_mojiko', 'shinmoji', 'ecotown', 'beppu_tour', 'hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka', 'hotel_munakata', 'kokura', 'shimonoseki', 'mine'],
                 lines: [
-                    { latlngs: [spots.kkj.coords, spots.kitakyushu.coords], color: '#64748b', dash: '' },
-                    { latlngs: [spots.kitakyushu.coords, spots.beppu.coords], color: '#2563eb', dash: '' },
-                    { latlngs: [spots.beppu.coords, spots.yufuin.coords, spots.fukuoka.coords, spots.munakata.coords], color: '#f59e0b', dash: '' },
-                    { latlngs: [spots.munakata.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }
+                    { latlngs: [spots.kkj.coords, spots.hotel_mojiko.coords], color: '#64748b', dash: '' },
+                    { latlngs: [spots.hotel_mojiko.coords, spots.shinmoji.coords, spots.ecotown.coords, spots.beppu_tour.coords, spots.hotel_fugetsu.coords], color: '#2563eb', dash: '' },
+                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' },
+                    { latlngs: [spots.hotel_munakata.coords, spots.kokura.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }
                 ]
             },
             day1: {
-                points: ['kkj', 'kitakyushu'],
+                points: ['kkj', 'hotel_mojiko'],
                 lines: [
-                    { latlngs: [spots.kkj.coords, spots.kitakyushu.coords], color: '#64748b', dash: '' }
+                    { latlngs: [spots.kkj.coords, spots.hotel_mojiko.coords], color: '#64748b', dash: '' }
                 ]
             },
             day2: {
-                points: ['kitakyushu', 'beppu'],
+                points: ['hotel_mojiko', 'shinmoji', 'ecotown', 'beppu_tour', 'hotel_fugetsu'],
                 lines: [
-                    { latlngs: [spots.kitakyushu.coords, spots.beppu.coords], color: '#2563eb', dash: '' }
+                    { latlngs: [spots.hotel_mojiko.coords, spots.shinmoji.coords, spots.ecotown.coords, spots.beppu_tour.coords, spots.hotel_fugetsu.coords], color: '#2563eb', dash: '' }
                 ]
             },
             day3: {
-                points: ['beppu', 'yufuin', 'fukuoka', 'munakata'],
+                points: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka', 'hotel_munakata'],
                 lines: [
-                    { latlngs: [spots.beppu.coords, spots.yufuin.coords, spots.fukuoka.coords, spots.munakata.coords], color: '#f59e0b', dash: '' }
+                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' }
                 ]
             },
             day4: {
-                points: ['munakata', 'shimonoseki', 'mine', 'kkj'],
+                points: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj'],
                 lines: [
-                    { latlngs: [spots.munakata.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }
+                    { latlngs: [spots.hotel_munakata.coords, spots.kokura.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }
                 ]
             }
         };
@@ -889,7 +932,7 @@
 
             const routeData = routes[routeKey];
             
-            routeData.lines.forEach((lineDef, index) => {
+            routeData.lines.forEach((lineDef) => {
                 const polyline = L.polyline(lineDef.latlngs, {
                     color: lineDef.color,
                     weight: 4,
@@ -900,7 +943,7 @@
                 // 지도 동선 애니메이션 효과 (스르륵 그려지는 효과)
                 setTimeout(() => {
                     const path = polyline.getElement();
-                    if (path && lineDef.dash === '') { // 점선이 아닌 실선만 애니메이션 적용
+                    if (path && lineDef.dash === '') { 
                         const length = path.getTotalLength();
                         path.style.transition = 'none';
                         path.style.strokeDasharray = length + ' ' + length;
@@ -917,8 +960,8 @@
             let currentBounds = L.latLngBounds();
             routeData.points.forEach(key => {
                 const spot = spots[key];
-                const size = 28;
-                const fontSize = 12;
+                const size = spot.isSub ? 24 : 28;
+                const fontSize = spot.isSub ? 10 : 12;
                 
                 const icon = L.divIcon({
                     className: 'custom-icon',
