@@ -167,7 +167,7 @@
                         <span class="inline-block border border-blue-600 text-blue-700 text-xs px-3 py-1.5 rounded-full font-bold">자원 순환 경제 모델</span>
                     </div>
 
-                    <!-- Point 3 (의전 뉘앙스 제거, 행정/업무 집중으로 포장) -->
+                    <!-- Point 3 -->
                     <div class="bg-slate-50 p-8 rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all duration-300 group">
                         <div class="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:scale-110 transition-transform text-slate-700 text-3xl">🚐</div>
                         <h3 class="text-xl font-bold text-slate-800 mb-3">업무 집중을 위한 이동 시스템</h3>
@@ -221,12 +221,11 @@
                     <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 전체 이동 경로와 숙소 위치를 확인하세요.</p>
                 </div>
 
-                <!-- 일자별 맵 컨트롤 버튼 (환경테마 텍스트로 보완) -->
                 <div class="flex flex-wrap justify-center gap-2 mb-6 px-2" id="map-controls">
                     <button onclick="changeMapRoute('all')" class="map-btn active px-5 py-2 rounded-full border border-slate-300 bg-emerald-700 text-white text-sm font-bold transition shadow-md">전체 여정</button>
                     <button onclick="changeMapRoute('day1')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">1일차</button>
                     <button onclick="changeMapRoute('day2')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">2일차(기관방문)</button>
-                    <button onclick="changeMapRoute('day3')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">3일차(생태보전)</button>
+                    <button onclick="changeMapRoute('day3')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">3일차(생태보전/재활용)</button>
                     <button onclick="changeMapRoute('day4')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">4일차(지질·수문)</button>
                 </div>
 
@@ -236,7 +235,7 @@
             </div>
         </section>
 
-        <!-- Detailed Schedule (공무원 연수/견학 중심) -->
+        <!-- Detailed Schedule -->
         <section id="schedule" class="py-16 bg-slate-50 border-t border-slate-200">
             <div class="container mx-auto px-4">
                 <div class="max-w-5xl mx-auto">
@@ -257,7 +256,9 @@
                         <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50 relative" onclick="openTab(event, 'day2'); changeMapRoute('day2')">
                             2일차 (5.13) <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full animate-pulse">핵심</span>
                         </button>
-                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50" onclick="openTab(event, 'day3'); changeMapRoute('day3')">3일차 (5.14)</button>
+                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50 relative" onclick="openTab(event, 'day3'); changeMapRoute('day3')">
+                            3일차 (5.14) <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full animate-pulse">핵심</span>
+                        </button>
                         <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50" onclick="openTab(event, 'day4'); changeMapRoute('day4')">4일차 (5.15)</button>
                     </div>
 
@@ -364,7 +365,7 @@
                             <div class="flex items-center gap-4 mb-6 border-b pb-6">
                                 <span class="text-4xl bg-orange-100 p-4 rounded-2xl text-orange-700"><i class="fa-solid fa-mountain-sun"></i></span>
                                 <div>
-                                    <h3 class="font-bold text-2xl text-slate-800">생태 보전 및 람사르 습지 벤치마킹</h3>
+                                    <h3 class="font-bold text-2xl text-slate-800">생태 보전 및 자원순환 복합시설 시찰</h3>
                                     <p class="text-orange-600 font-medium text-sm mt-1"><i class="fa-solid fa-map-location-dot"></i> 벳부 → 유후인 → 고코노에 → 후쿠오카 → 무나가타</p>
                                 </div>
                             </div>
@@ -372,40 +373,32 @@
                             <div class="relative border-l-2 border-orange-200 ml-4 pl-8 space-y-8">
                                 <div class="relative">
                                     <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏞️ 유후인 (긴린코 호수 & 민예촌)</h4>
+                                    <h4 class="font-bold text-lg text-slate-800">🏞️ 유후인 (긴린코 호수)</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed mb-3">
-                                        호텔 조식 후 약 1시간 이동합니다. 호수 바닥에서 온천수와 냉천수가 함께 솟아올라 신비로운 물안개를 피우는 <strong>긴린코 호수</strong>의 자연 생태를 관찰하고, 아기자기한 수공예품 상점이 즐비한 <strong>민예촌 거리</strong>를 거닐며 지역 상권 활성화 모델을 봅니다.
+                                        호텔 조식 후 약 1시간 이동합니다. 호수 바닥에서 온천수와 냉천수가 함께 솟아올라 신비로운 물안개를 피우는 <strong>긴린코 호수</strong>의 자연 생태를 관찰합니다.
                                     </p>
                                 </div>
                                 
                                 <div class="relative">
                                     <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🌿 고코노에 (초자바루 비지터센터 & 타데하라습지 목도 탐방)</h4>
+                                    <h4 class="font-bold text-lg text-slate-800">🌿 고코노에 (초자바루 비지터센터 & 타데하라습지)</h4>
                                     <p class="text-slate-600 text-sm mt-2 leading-relaxed">
                                         단순 관광을 넘어 생태 보전의 현장을 찾습니다. <strong>초자바루 비지터센터</strong>에서 아소쿠주 국립공원의 지형과 생태계 해설 전시를 견학합니다. 이어 람사르협약 등록 습지인 <strong>타데하라습지</strong>의 목도를 직접 걸으며 독특한 식생과 생태계 보전 모델을 벤치마킹합니다.
                                     </p>
                                 </div>
 
                                 <div class="relative">
-                                    <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🌉 유메오츠리바시(꿈의 대현수교)</h4>
-                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        보행자 전용 다리로 일본 최대 높이와 길이를 자랑하는 현수교를 건너며 웅장한 자연 경관을 체험합니다.
-                                    </p>
-                                </div>
-                                
-                                <div class="relative">
-                                    <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800 mt-6 pt-4 border-t border-slate-200">🗼 후쿠오카 이동 및 조망</h4>
-                                    <p class="text-slate-600 text-sm mt-2 leading-relaxed">
-                                        규슈의 중심 도시 후쿠오카로 이동(약 2시간)합니다. 지상 70m 높이의 <strong>하카타 포트 타워</strong>에 올라 시내와 항구의 스카이라인을 360도로 조망합니다. (이후 면세점 1회 방문)
+                                    <div class="timeline-dot bg-blue-600 ring-blue-100"></div>
+                                    <h4 class="font-bold text-lg text-slate-800 mt-6 pt-4 border-t border-slate-200 flex items-center gap-2">♻️ 후쿠오카 클린파크 린카이 (재활용·소각 시설) <span class="bg-red-100 text-red-600 text-[10px] px-2 py-1 rounded font-bold">공식 기관방문</span></h4>
+                                    <p class="text-slate-700 text-sm mt-2 leading-relaxed bg-white border border-slate-200 p-4 rounded-lg shadow-sm">
+                                        오후에는 후쿠오카시로 이동하여 친환경 자원순환 복합시설인 <strong>'클린파크 린카이'</strong>를 방문합니다. 최신식 소각로 운영 방식, 소각 여열을 활용한 발전 및 지역 난방 시스템을 시찰합니다. 또한, 시민 대상의 리사이클 플라자(재활용 체험 및 교육 시설)를 둘러보며 대도시의 폐기물 처리 및 시민 참여형 자원순환 모델을 정선군 실정에 맞게 벤치마킹합니다.
                                     </p>
                                 </div>
 
                                 <div class="relative">
                                     <div class="timeline-dot bg-slate-400 ring-slate-100"></div>
-                                    <h4 class="font-bold text-lg text-slate-800">🏨 무나가타 이동 및 휴식</h4>
-                                    <p class="text-slate-500 text-sm mt-2">머큐어 무나가타 호텔(또는 동급) 투숙 및 온천욕 / 조식(호텔식) / 중식(현지식) / 석식(호텔식 뷔페)</p>
+                                    <h4 class="font-bold text-lg text-slate-800 mt-6 pt-4 border-t border-slate-200">🏨 무나가타 이동 및 휴식</h4>
+                                    <p class="text-slate-500 text-sm mt-2">일정 종료 후 무나가타로 이동. 머큐어 무나가타 호텔(또는 동급) 투숙 및 온천욕 / 조식(호텔식) / 중식(현지식) / 석식(호텔식 뷔페)</p>
                                 </div>
                             </div>
                         </div>
@@ -457,7 +450,7 @@
             </div>
         </section>
 
-        <!-- Accommodations & Transport (의전 뉘앙스 배제) -->
+        <!-- Accommodations & Transport -->
         <section id="hotel" class="py-16 bg-white border-t border-slate-200">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-10">
@@ -470,7 +463,6 @@
                     <!-- Hotel 1 -->
                     <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group">
                         <div class="h-40 bg-slate-200 relative overflow-hidden">
-                            <!-- 모지코 사진 적용 -->
                             <img src="https://tse4.mm.bing.net/th/id/OIP.magjq_me9iGLkGjrByjZXwHaES?w=474&h=474&c=7&p=0" alt="Hotel" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                             <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">1일차 숙박</div>
                         </div>
@@ -482,7 +474,6 @@
                     <!-- Hotel 2 -->
                     <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group">
                         <div class="h-40 bg-slate-200 relative overflow-hidden">
-                            <!-- 풍월호텔 사진 적용 -->
                             <img src="https://tse1.mm.bing.net/th/id/OIP.ww0VoTsOUeHHcZ_cNMxwjwHaFV?w=474&h=474&c=7&p=0" alt="Onsen Hotel" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                             <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">2일차 숙박</div>
                         </div>
@@ -494,7 +485,6 @@
                     <!-- Hotel 3 -->
                     <div class="bg-slate-50 rounded-2xl border border-slate-200 overflow-hidden shadow-sm group">
                         <div class="h-40 bg-slate-200 relative overflow-hidden">
-                            <!-- 무나가타 호텔 사진 적용 -->
                             <img src="https://tse4.mm.bing.net/th/id/OIP.Dw7bG91zkPb0CTrS00XFZgHaE8?w=474&h=474&c=7&p=0" alt="Resort" class="w-full h-full object-cover group-hover:scale-105 transition-transform">
                             <div class="absolute bottom-2 left-2 bg-black/60 text-white text-[10px] px-2 py-1 rounded">3일차 숙박</div>
                         </div>
@@ -536,7 +526,7 @@
             </div>
         </section>
 
-        <!-- Checklist (공무원 맞춤형) -->
+        <!-- Checklist -->
         <section id="check" class="py-16 bg-white border-t border-slate-100">
             <div class="container mx-auto px-4">
                 <div class="text-center mb-10">
@@ -648,7 +638,7 @@
             <div class="text-slate-800">
                 <p>일 정 : 2026.05.12(화) ~ 05.15(금) [3박 4일]</p>
                 <p class="mt-1">인 원 : 정선군청 환경과 6명 (단독 행사)</p>
-                <p class="mt-1">목 적 : 소각시설(열분해용융/스토커) 및 에코타운 시찰</p>
+                <p class="mt-1">목 적 : 환경시설(열분해용융/에코타운/클린파크 린카이) 벤치마킹</p>
             </div>
             <div class="text-right text-slate-800">
                 <p>제안 및 진행: 투어메이커</p>
@@ -713,15 +703,14 @@
                     <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs">
                         벳부<br>유후인<br>고코노에<br>후쿠오카<br>무나가타<br>전용차량
                     </td>
-                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed">
+                    <td class="border border-slate-800 py-3 px-4 align-top leading-relaxed bg-blue-50/30">
                         ▶ 호텔 조식 후 유후인으로 이동 (약 1시간)<br>
                         ▶ <strong>긴린코 호수:</strong> 자연 생태 보존 및 관광 자원화 사례 관찰<br>
-                        ▶ <strong>유후인 민예촌:</strong> 전통 거리 및 지역 상권 시찰<br>
-                        ▶ 고코노에로 이동 (약 40분)<br>
                         ▶ <strong>초자바루 비지터센터 & 타데하라습지:</strong> 국립공원 생태 해설 견학 및 람사르 등록 습지 보전 사례 연구<br>
-                        ▶ <strong>유메오츠리바시(꿈의 대현수교):</strong> 보행자 전용 대형 현수교 및 자연 경관 체험<br>
-                        ▶ 후쿠오카 이동 (약 2시간) / <strong>하카타 타워</strong> 360도 도심 조망 및 면세점 방문<br>
-                        ▶ 무나가타 이동 (약 50분) 및 <strong>호텔 투숙</strong> (머큐어 무나가타 호텔 또는 동급)
+                        ▶ 후쿠오카 이동 (약 2시간)<br>
+                        ▶ <strong class="text-blue-700">후쿠오카 클린파크 린카이 방문:</strong> 시민참여형 리사이클 플라자 및 대도시 자원순환 복합시설 시찰<br>
+                        ▶ 무나가타 이동 (약 50분)<br>
+                        ▶ <strong>호텔 투숙 및 휴식</strong> (머큐어 무나가타 호텔 또는 동급)
                     </td>
                     <td class="border border-slate-800 py-3 px-2 text-center align-middle text-xs text-slate-700">
                         [조] 호텔식<br>
@@ -795,7 +784,7 @@
             }
         }
 
-        // Checklist Logic (공무원 맞춤형)
+        // Checklist Logic
         const CHECK_KEY = 'jeongseon_eco_checklist_v1'; 
         const CHECK_ITEMS = [
             '여권 (유효기간 6개월 이상 필수 확인)',
@@ -864,7 +853,7 @@
             window.addEventListener('resize', autoResize);
         })();
 
-        // Map Route & Layer Logic (동선 풍성하게 숙소 포함 및 애니메이션 적용)
+        // Map Route & Layer Logic
         let map;
         let mapLayers = [];
 
@@ -883,8 +872,8 @@
             
             // Day 3
             yufuin: { coords: [33.264, 131.361], title: "유후인 긴린코 호수", color: "#f59e0b", icon: "🏞️", isSub: true },
-            kokonoe: { coords: [33.111, 131.233], title: "타데하라습지/유메오츠리바시", color: "#f59e0b", icon: "🌿", isSub: true },
-            fukuoka: { coords: [33.606, 130.402], title: "후쿠오카 시내", color: "#f59e0b", icon: "🏙️", isSub: true },
+            kokonoe: { coords: [33.111, 131.233], title: "타데하라습지", color: "#f59e0b", icon: "🌿", isSub: true },
+            fukuoka_clean: { coords: [33.626, 130.435], title: "후쿠오카 클린파크 린카이", color: "#dc2626", icon: "♻️", isSub: true },
             hotel_munakata: { coords: [33.805, 130.540], title: "3일차 숙소 (무나가타)", color: "#1e293b", icon: "🏨", isSub: true },
             
             // Day 4
@@ -893,14 +882,13 @@
             mine: { coords: [34.240, 131.300], title: "미네 (아키요시다이)", color: "#16a34a", icon: "🪨", isSub: true }
         };
 
-        // 지도 동선 배열 구성 (호텔 경유)
         const routes = {
             all: {
-                points: ['kkj', 'hotel_mojiko', 'shinmoji', 'ecotown', 'beppu_tour', 'hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka', 'hotel_munakata', 'kokura', 'shimonoseki', 'mine'],
+                points: ['kkj', 'hotel_mojiko', 'shinmoji', 'ecotown', 'beppu_tour', 'hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata', 'kokura', 'shimonoseki', 'mine'],
                 lines: [
                     { latlngs: [spots.kkj.coords, spots.hotel_mojiko.coords], color: '#64748b', dash: '' },
                     { latlngs: [spots.hotel_mojiko.coords, spots.shinmoji.coords, spots.ecotown.coords, spots.beppu_tour.coords, spots.hotel_fugetsu.coords], color: '#2563eb', dash: '' },
-                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' },
+                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka_clean.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' },
                     { latlngs: [spots.hotel_munakata.coords, spots.kokura.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }
                 ]
             },
@@ -917,9 +905,9 @@
                 ]
             },
             day3: {
-                points: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka', 'hotel_munakata'],
+                points: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata'],
                 lines: [
-                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' }
+                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka_clean.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' }
                 ]
             },
             day4: {
@@ -945,7 +933,6 @@
                     dashArray: lineDef.dash
                 }).addTo(map);
                 
-                // 지도 동선 애니메이션 효과 (스르륵 그려지는 효과)
                 setTimeout(() => {
                     const path = polyline.getElement();
                     if (path && lineDef.dash === '') { 
@@ -953,7 +940,7 @@
                         path.style.transition = 'none';
                         path.style.strokeDasharray = length + ' ' + length;
                         path.style.strokeDashoffset = length;
-                        path.getBoundingClientRect(); // Trigger reflow
+                        path.getBoundingClientRect(); 
                         path.style.transition = 'stroke-dashoffset 2s ease-in-out';
                         path.style.strokeDashoffset = '0';
                     }
