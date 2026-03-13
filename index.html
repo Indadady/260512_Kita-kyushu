@@ -65,14 +65,29 @@
 
         /* 🖨️ 공무원 결재 서류용 인쇄 최적화 (엑셀 양식 완벽 구현 및 A4 피팅) */
         @media print {
-            @page { size: A4 portrait; margin: 12mm 10mm; } 
+            @page { size: A4 portrait; margin: 15mm 12mm; } 
             body { background-color: white !important; font-size: 10.5pt; color: black !important; }
             a[href]:after { content: none !important; }
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             
-            /* Print Table Styles - 빈 공간 없이 꽉 차게 */
-            table { width: 100%; border-collapse: collapse; }
-            #print-area td, #print-area th { padding: 7px 6px; line-height: 1.4; border: 1px solid #1e293b; }
+            /* Print Table Styles - 가로선 제거 및 통합형 셀 구현 */
+            table { width: 100%; border-collapse: collapse; border: 2px solid #1e293b; }
+            #print-area th { padding: 8px 6px; border: 1px solid #1e293b; background-color: #f8fafc !important; }
+            
+            /* 일자별 구분을 위한 Tbody 하단 굵은 선 */
+            #print-area tbody { border-bottom: 2px solid #1e293b; }
+            
+            /* 핵심: 내부 가로선(border-top, bottom) 제거하여 셀을 하나처럼 통합 */
+            #print-area td { 
+                padding: 6.5px 8px; 
+                line-height: 1.5; 
+                border-left: 1px solid #1e293b; 
+                border-right: 1px solid #1e293b; 
+                border-top: none; 
+                border-bottom: none; 
+            }
+            #print-area td:first-child { border-left: none; }
+            #print-area td:last-child { border-right: none; }
             
             .print-hidden { display: none !important; }
         }
@@ -229,7 +244,7 @@
             </div>
         </section>
 
-        <!-- ✨ 스마트 가이드북 상세일정 (웹 뷰 - 시간 제거 및 텍스트 강조) -->
+        <!-- ✨ 스마트 가이드북 상세일정 (웹 화면: 시간 생략, 직관적 텍스트 강조) -->
         <section id="schedule" class="py-16 bg-slate-50 border-t border-slate-200">
             <div class="container mx-auto px-4">
                 <div class="max-w-5xl mx-auto">
@@ -384,7 +399,7 @@
                                 <div class="relative">
                                     <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
                                     <h4 class="font-bold text-lg text-slate-800">🌿 고코노에 (초자바루 & 타데하라습지)</h4>
-                                    <p class="text-slate-600 text-sm mt-2">초자바루 비지터센터에서 국립공원 생태계 해설을 듣고, 람사르협약 등록 습지인 타데하라습지의 목도를 직접 걸으며 생태계 보전 모델을 시찰합니다.</p>
+                                    <p class="text-slate-600 text-sm mt-2">초자바루 비지터센터에서 국립공원 생태계 해설을 듣고, 람사르협약 등록 습지인 타데하라습지의 목도를 직접 걸으며 생태계 보전 모델 시찰합니다.</p>
                                 </div>
                                 <div class="relative">
                                     <div class="timeline-dot bg-orange-500 ring-orange-100"></div>
@@ -631,7 +646,7 @@
 
 
     <!-- ========================================================================= -->
-    <!-- 🖨️ Print-Only Area (결재 서류용 테이블 완벽 구조 - 일자별 단일 박스 & 숙소 별도강조) -->
+    <!-- 🖨️ Print-Only Area (엑셀 양식 완벽 구현: 가로선 제거, 단일 셀 통합, 호텔 박스 배치) -->
     <!-- ========================================================================= -->
     <div id="print-area" class="hidden print:block w-full bg-white text-black py-2">
         
@@ -652,13 +667,13 @@
             </div>
         </div>
 
-        <!-- Print Table: 엑셀 양식처럼 일정과 시간이 리스트업되어 오른쪽 빈칸이 최소화되는 구조 -->
+        <!-- Print Table: 엑셀 양식처럼 4열 구조이며 내부 가로선이 없는 일체형 블록 -->
         <table class="w-full text-[10.5pt]">
             <thead>
                 <tr class="bg-slate-100 text-slate-800">
-                    <th class="w-[10%] text-center font-bold">날짜</th>
+                    <th class="w-[12%] text-center font-bold">날짜</th>
                     <th class="w-[15%] text-center font-bold">시간</th>
-                    <th class="w-[65%] text-center font-bold">일정</th>
+                    <th class="w-[63%] text-center font-bold">일정</th>
                     <th class="w-[10%] text-center font-bold">식사</th>
                 </tr>
             </thead>
@@ -666,91 +681,46 @@
             <tbody>
                 <!-- Day 1 -->
                 <tr>
-                    <td class="text-center align-middle font-bold bg-slate-50" rowspan="7">1일차<br>5/12<br>(화)</td>
-                    <td class="text-center align-middle">13:00</td>
+                    <td class="text-center align-middle font-bold bg-slate-50" rowspan="6">1일차<br>5/12<br>(화)</td>
+                    <td class="text-center align-middle font-bold">13:00</td>
                     <td class="text-left align-middle px-3">▶ 인천국제공항 제2여객터미널 미팅 및 수속</td>
-                    <td class="text-center align-middle text-[9.5pt]" rowspan="7">
+                    <td class="text-center align-middle text-[9.5pt]" rowspan="6">
                         [조] -<br><br><br>
                         [중] -<br><br><br>
                         [석] 현지식
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">15:45<span class="text-[9pt] font-normal">출발</span></td>
+                    <td class="text-center align-middle font-bold">15:45<span class="text-[9pt] font-normal text-slate-500 ml-1">출발</span></td>
                     <td class="text-left align-middle px-3">▶ 인천국제공항 출발 (진에어 LJ349)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">17:15<span class="text-[9pt] font-normal">도착</span></td>
+                    <td class="text-center align-middle font-bold">17:15<span class="text-[9pt] font-normal text-slate-500 ml-1">도착</span></td>
                     <td class="text-left align-middle px-3">▶ 기타큐슈 공항 도착</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">18:00</td>
+                    <td class="text-center align-middle font-bold">18:00</td>
                     <td class="text-left align-middle px-3">▶ 입국 수속 완료 및 연수 전문 가이드 미팅 (전용차량 탑승)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">18:30~19:30</td>
+                    <td class="text-center align-middle font-bold">18:30</td>
                     <td class="text-left align-middle px-3">▶ 기타큐슈 모지코 지구 이동 및 석식 진행</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">19:30</td>
-                    <td class="text-left align-middle px-3">▶ 호텔 투숙 및 휴식</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="text-emerald-700 font-bold bg-emerald-50/70 text-[10pt] px-3">숙소: 프리미어호텔 모지코 (또는 동급)</td>
+                    <td class="text-center align-middle font-bold">19:30</td>
+                    <td class="text-left align-middle px-3">
+                        ▶ 호텔 투숙 및 휴식
+                        <div class="mt-2 ml-4 text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 inline-block text-[9.5pt]">
+                            🏨 숙소: 프리미어호텔 모지코 (또는 동급)
+                        </div>
+                    </td>
                 </tr>
 
                 <!-- Day 2 -->
                 <tr>
-                    <td class="text-center align-middle font-bold bg-slate-50" rowspan="10">2일차<br>5/13<br>(수)</td>
-                    <td class="text-center align-middle">전일</td>
-                    <td class="text-left align-middle px-3">▶ 기상 및 조식</td>
-                    <td class="text-center align-middle text-[9.5pt]" rowspan="10">
-                        [조] 호텔식<br><br><br>
-                        [중] 현지식<br><br><br>
-                        [석] 호텔식<br>(뷔페)
-                    </td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle">08:30</td>
-                    <td class="text-left align-middle px-3">▶ 숙소 출발</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle text-red-600 font-bold">09:00~10:30</td>
-                    <td class="text-left align-middle px-3 text-red-600">▶ <b>[공식방문] 신모지 소각시설</b> (열분해용융방식 시찰 및 스토커 방식 비교)</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle">11:00~12:00</td>
-                    <td class="text-left align-middle px-3">▶ <b>기타큐슈 환경뮤지엄</b> (공해 극복 및 친환경 도시 재생 사례 연구)</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle">12:00~13:00</td>
-                    <td class="text-left align-middle px-3">▶ 중식 진행 (현지식)</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle text-red-600 font-bold">13:30~15:00</td>
-                    <td class="text-left align-middle px-3 text-red-600">▶ <b>[공식방문] 기타큐슈 에코타운 센터</b> (폐기물 제로 리사이클링 산업단지 시찰)</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle">15:00~17:00</td>
-                    <td class="text-left align-middle px-3">▶ 벳부로 이동 (약 2시간 소요)</td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle">17:00~18:30</td>
-                    <td class="text-left align-middle px-3">▶ <b>가마도 지옥</b> (족욕 체험 및 지열 활용 관광 시찰) & <b>유노하나 유황재배지</b></td>
-                </tr>
-                <tr>
-                    <td class="text-center align-middle">18:30</td>
-                    <td class="text-left align-middle px-3">▶ 호텔 체크인 및 석식, 온천욕</td>
-                </tr>
-                <tr>
-                    <td colspan="2" class="text-emerald-700 font-bold bg-emerald-50/70 text-[10pt] px-3">숙소: 오오에도 풍월호텔 (또는 동급)</td>
-                </tr>
-
-                <!-- Day 3 -->
-                <tr>
-                    <td class="text-center align-middle font-bold bg-slate-50" rowspan="9">3일차<br>5/14<br>(목)</td>
-                    <td class="text-center align-middle">전일</td>
-                    <td class="text-left align-middle px-3">▶ 기상 및 조식</td>
+                    <td class="text-center align-middle font-bold bg-slate-50" rowspan="9">2일차<br>5/13<br>(수)</td>
+                    <td class="text-center align-middle font-bold">07:00</td>
+                    <td class="text-left align-middle px-3">▶ 기상 및 호텔 조식</td>
                     <td class="text-center align-middle text-[9.5pt]" rowspan="9">
                         [조] 호텔식<br><br><br>
                         [중] 현지식<br><br><br>
@@ -758,41 +728,92 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">08:30</td>
-                    <td class="text-left align-middle px-3">▶ 숙소 출발 및 유후인으로 이동</td>
+                    <td class="text-center align-middle font-bold">08:30</td>
+                    <td class="text-left align-middle px-3">▶ 숙소 출발 및 신모지로 이동</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">09:00~10:30</td>
-                    <td class="text-left align-middle px-3">▶ <b>긴린코 호수</b> (자연 생태 보존 사례 관찰)</td>
+                    <td class="text-center align-middle font-bold text-red-600">09:00</td>
+                    <td class="text-left align-middle px-3 text-red-600 font-bold">▶ [공식방문] 신모지 소각시설 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(열분해용융방식 시찰 및 스토커 방식 비교)</span></td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">11:10~12:30</td>
-                    <td class="text-left align-middle px-3">▶ <b>초자바루 센터 & 타데하라습지</b> (국립공원 생태 해설 및 람사르 등록 습지 시찰)</td>
+                    <td class="text-center align-middle font-bold">11:00</td>
+                    <td class="text-left align-middle px-3 font-bold">▶ 기타큐슈 환경뮤지엄 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(공해 극복 및 친환경 도시 재생 사례 연구)</span></td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">12:30~13:30</td>
+                    <td class="text-center align-middle font-bold">12:00</td>
                     <td class="text-left align-middle px-3">▶ 중식 진행 (현지식)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle text-red-600 font-bold">15:00~16:30</td>
-                    <td class="text-left align-middle px-3 text-red-600">▶ <b>[공식방문] 후쿠오카 클린파크 린카이</b> (소각로 및 리사이클플라자 시찰)</td>
+                    <td class="text-center align-middle font-bold text-red-600">13:30</td>
+                    <td class="text-left align-middle px-3 text-red-600 font-bold">▶ [공식방문] 기타큐슈 에코타운 센터 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(폐기물 제로 리사이클링 산업단지 시찰)</span></td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">16:30~17:30</td>
-                    <td class="text-left align-middle px-3">▶ 무나가타로 이동</td>
+                    <td class="text-center align-middle font-bold">15:00</td>
+                    <td class="text-left align-middle px-3">▶ 벳부로 이동 (약 2시간 소요)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">17:30</td>
-                    <td class="text-left align-middle px-3">▶ 호텔 체크인 및 석식, 휴식</td>
+                    <td class="text-center align-middle font-bold">17:00</td>
+                    <td class="text-left align-middle px-3">▶ 가마도 지옥 (족욕 체험 및 지열 활용 시찰) & 유노하나 유황재배지</td>
                 </tr>
                 <tr>
-                    <td colspan="2" class="text-emerald-700 font-bold bg-emerald-50/70 text-[10pt] px-3">숙소: 머큐어 무나가타 호텔 (또는 동급)</td>
+                    <td class="text-center align-middle font-bold">18:30</td>
+                    <td class="text-left align-middle px-3">
+                        ▶ 호텔 체크인 및 석식, 온천욕
+                        <div class="mt-2 ml-4 text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 inline-block text-[9.5pt]">
+                            🏨 숙소: 오오에도 풍월호텔 (또는 동급)
+                        </div>
+                    </td>
+                </tr>
+
+                <!-- Day 3 -->
+                <tr>
+                    <td class="text-center align-middle font-bold bg-slate-50" rowspan="8">3일차<br>5/14<br>(목)</td>
+                    <td class="text-center align-middle font-bold">07:30</td>
+                    <td class="text-left align-middle px-3">▶ 기상 및 호텔 조식</td>
+                    <td class="text-center align-middle text-[9.5pt]" rowspan="8">
+                        [조] 호텔식<br><br><br>
+                        [중] 현지식<br><br><br>
+                        [석] 호텔식<br>(뷔페)
+                    </td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold">08:30</td>
+                    <td class="text-left align-middle px-3">▶ 숙소 출발 및 유후인으로 이동</td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold">09:00</td>
+                    <td class="text-left align-middle px-3 font-bold">▶ 긴린코 호수 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(자연 생태 보존 및 관광 자원화 사례 관찰)</span></td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold">11:10</td>
+                    <td class="text-left align-middle px-3 font-bold">▶ 초자바루 비지터센터 & 타데하라습지 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(국립공원 생태 해설 및 람사르 등록 습지 시찰)</span></td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold">12:30</td>
+                    <td class="text-left align-middle px-3">▶ 중식 진행 (현지식)</td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold text-red-600">15:00</td>
+                    <td class="text-left align-middle px-3 text-red-600 font-bold">▶ [공식방문] 후쿠오카 클린파크 린카이 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(소각로 및 리사이클플라자 시찰)</span></td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold">16:30</td>
+                    <td class="text-left align-middle px-3">▶ 무나가타로 이동 (약 1시간)</td>
+                </tr>
+                <tr>
+                    <td class="text-center align-middle font-bold">17:30</td>
+                    <td class="text-left align-middle px-3">
+                        ▶ 호텔 투숙 및 석식, 휴식
+                        <div class="mt-2 ml-4 text-emerald-700 font-bold bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-200 inline-block text-[9.5pt]">
+                            🏨 숙소: 머큐어 무나가타 호텔 (또는 동급)
+                        </div>
+                    </td>
                 </tr>
 
                 <!-- Day 4 -->
                 <tr>
                     <td class="text-center align-middle font-bold bg-slate-50" rowspan="9">4일차<br>5/15<br>(금)</td>
-                    <td class="text-center align-middle">07:30~08:30</td>
+                    <td class="text-center align-middle font-bold">07:30</td>
                     <td class="text-left align-middle px-3">▶ 기상 및 조식</td>
                     <td class="text-center align-middle text-[9.5pt]" rowspan="9">
                         [조] 호텔식<br><br><br>
@@ -801,35 +822,35 @@
                     </td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">08:30</td>
+                    <td class="text-center align-middle font-bold">08:30</td>
                     <td class="text-left align-middle px-3">▶ 숙소 출발 (체크아웃)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">09:30~10:30</td>
-                    <td class="text-left align-middle px-3">▶ <b>고쿠라성</b> 외관 관람 (지역 역사 문화 탐방)</td>
+                    <td class="text-center align-middle font-bold">09:30</td>
+                    <td class="text-left align-middle px-3 font-bold">▶ 고쿠라성 외관 관람 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(지역 역사 문화 탐방)</span></td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">10:30~11:30</td>
-                    <td class="text-left align-middle px-3">▶ <b>가라토 시장</b> 및 <b>아카마 신궁</b> (한일 교류 역사 시찰)</td>
+                    <td class="text-center align-middle font-bold">10:30</td>
+                    <td class="text-left align-middle px-3 font-bold">▶ 가라토 시장 및 아카마 신궁 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(한일 교류의 역사적 장소 시찰)</span></td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">11:30~12:30</td>
+                    <td class="text-center align-middle font-bold">11:30</td>
                     <td class="text-left align-middle px-3">▶ 중식 진행 (현지식)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">13:30~15:00</td>
-                    <td class="text-left align-middle px-3">▶ <b>아키요시다이 & 아키요시동굴</b> (수문 환경 보전 사례 연구)</td>
+                    <td class="text-center align-middle font-bold">13:30</td>
+                    <td class="text-left align-middle px-3 font-bold">▶ 아키요시다이 & 아키요시동굴 <span class="text-[9.5pt] font-normal text-slate-600 ml-1">(특별천연기념물 지하 생태·수문 환경 보전 시찰)</span></td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">16:15</td>
+                    <td class="text-center align-middle font-bold">16:15</td>
                     <td class="text-left align-middle px-3">▶ 기타큐슈 공항 도착 및 탑승 수속</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle">18:15<span class="text-[9pt] font-normal">출발</span></td>
+                    <td class="text-center align-middle font-bold">18:15<span class="text-[8pt] font-normal text-slate-500 ml-1">출발</span></td>
                     <td class="text-left align-middle px-3">▶ 기타큐슈 공항 출발 (진에어 LJ350)</td>
                 </tr>
                 <tr>
-                    <td class="text-center align-middle font-bold">19:40<span class="text-[9pt] font-normal">도착</span></td>
+                    <td class="text-center align-middle font-bold">19:40<span class="text-[8pt] font-normal text-slate-500 ml-1">도착</span></td>
                     <td class="text-left align-middle px-3 font-bold">▶ 인천국제공항 도착 및 해산</td>
                 </tr>
             </tbody>
@@ -944,7 +965,7 @@
         let mapLayers = [];
 
         const spots = {
-            kkj: { coords: [33.8385, 130.9472], title: "기타큐슈 공항", color: "#64748b", icon: "✈️" },
+            kkj: { coords: [33.8385, 130.9472], title: "기타큐 공항", color: "#64748b", icon: "✈️" },
             hotel_mojiko: { coords: [33.945, 130.963], title: "1일차 숙소 (모지코)", color: "#1e293b", icon: "🏨", isSub: true },
             shinmoji: { coords: [33.911, 131.002], title: "신모지 소각장", color: "#dc2626", icon: "🏭", isSub: true },
             ecotown: { coords: [33.924, 130.826], title: "기타큐슈 에코타운", color: "#dc2626", icon: "♻️", isSub: true },
