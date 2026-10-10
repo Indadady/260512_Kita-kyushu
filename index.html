@@ -1438,7 +1438,6 @@
             const hintEl = document.getElementById('map-hint');
             if (hintEl) hintEl.textContent = hint;
             setMapDistance('', '', 0, 0);
-            const follow = routeKey !== 'all';
             const bounds = L.latLngBounds(routeData.points.map(key => spots[key].coords));
             currentMap.fitBounds(bounds, { padding: [50, 50], maxZoom: routeData.maxZoom || 11 });
             setTimeout(() => currentMap.invalidateSize(), 120);
@@ -1458,8 +1457,6 @@
             }));
             if (seq !== mapDrawSeq) return;
             const paths = packed.map(item => item.path);
-            paths.forEach(path => path.forEach(pt => bounds.extend(pt)));
-            if (!follow) currentMap.fitBounds(bounds, { padding: [50, 50], maxZoom: routeData.maxZoom || 11 });
             await new Promise(r => setTimeout(r, 280));
             if (seq !== mapDrawSeq) return;
             paths.forEach((path, i) => {
@@ -1480,10 +1477,13 @@
                     .bindTooltip(spot.title, { direction: 'top', offset: [0, -16] });
                 mapLayers.push(marker);
             };
-            if (follow) {
-                await fitPath(paths[0], legs[0].mode === 'air' ? 6 : (routeData.maxZoom || 12));
-                if (seq !== mapDrawSeq) return;
-            }
+            const legMaxZoom = (leg) => {
+                if (leg.mode === 'air') return 6;
+                if (routeKey === 'all') return Math.min(routeData.maxZoom || 10, 10);
+                return routeData.maxZoom || 12;
+            };
+            await fitPath(paths[0], legMaxZoom(legs[0]));
+            if (seq !== mapDrawSeq) return;
             addPin(legs[0].from);
             const firstLeg = legs[0];
             const firstHeading = bearingDeg(spots[firstLeg.from].coords, spots[firstLeg.to].coords);
@@ -1507,10 +1507,8 @@
                 bus.setIcon(vehicleIcon(emoji, heading, zero));
                 bus.setLatLng(path[0]);
                 setMapDistance(leg.from, leg.to, meters, seconds, leg.mode);
-                if (follow) {
-                    await fitPath(path, leg.mode === 'air' ? 6 : (routeData.maxZoom || 12));
-                    if (seq !== mapDrawSeq) return;
-                }
+                await fitPath(path, legMaxZoom(leg));
+                if (seq !== mapDrawSeq) return;
                 const poly = L.polyline(path, {
                     color: leg.color, weight: leg.mode === 'air' ? 3 : 5, opacity: 0.95,
                     dashArray: leg.mode === 'air' ? '10 8' : null,
