@@ -1208,7 +1208,7 @@
         const routes = {
             all: {
                 points: ['icn', 'kkj', 'hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata', 'kokura', 'shimonoseki', 'mine'],
-                maxZoom: 7,
+                maxZoom: 8,
                 lines: [
                     { pts: ['icn', 'kkj'], color: '#64748b', mode: 'air' },
                     { pts: ['kkj', 'hotel_mojiko'], color: '#64748b' },
@@ -1220,7 +1220,7 @@
             },
             day1: {
                 points: ['icn', 'kkj', 'hotel_mojiko'],
-                maxZoom: 6,
+                maxZoom: 12,
                 lines: [
                     { pts: ['icn', 'kkj'], color: '#64748b', mode: 'air' },
                     { pts: ['kkj', 'hotel_mojiko'], color: '#64748b' }
@@ -1228,17 +1228,17 @@
             },
             day2: {
                 points: ['hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu'],
-                maxZoom: 9,
+                maxZoom: 11,
                 lines: [{ pts: ['hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu'], color: '#2563eb' }]
             },
             day3: {
                 points: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata'],
-                maxZoom: 9,
+                maxZoom: 10,
                 lines: [{ pts: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata'], color: '#f59e0b' }]
             },
             day4: {
                 points: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj', 'icn'],
-                maxZoom: 7,
+                maxZoom: 11,
                 lines: [
                     { pts: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj'], color: '#16a34a' },
                     { pts: ['kkj', 'icn'], color: '#64748b', mode: 'air' }
@@ -1307,15 +1307,9 @@
                 iconAnchor: [48, 16]
             });
         }
-        function vehicleIcon(emoji, heading, zeroDeg) {
-            const rot = ((heading - zeroDeg) % 360 + 360) % 360;
-            return L.divIcon({
-                className: 'custom-icon',
-                html: `<div class="map-bus" data-zero="${zeroDeg}" style="transform:rotate(${rot}deg)">${emoji}</div>`,
-                iconSize: [28, 28],
-                iconAnchor: [14, 14]
-            });
-        }
+        // ✈️≈북동 45°, 🚌≈동 90°
+        const PLANE_REST_DEG = 45;
+        const BUS_REST_DEG = 90;
         function bearingDeg(from, to) {
             const lat1 = from[0] * Math.PI / 180;
             const lat2 = to[0] * Math.PI / 180;
@@ -1323,6 +1317,45 @@
             const y = Math.sin(dLng) * Math.cos(lat2);
             const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
             return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+        function headingPair(latlngs, i) {
+            // 짧은 지그재그는 건너뛰어 기수가 뒤로 뒤집히는 현상 완화
+            const a = latlngs[Math.max(0, Math.min(i, latlngs.length - 1))];
+            let j = Math.min(Math.max(i + 1, 1), latlngs.length - 1);
+            while (j < latlngs.length - 1 && L.latLng(a).distanceTo(L.latLng(latlngs[j])) < 40) j++;
+            return [a, latlngs[j]];
+        }
+        function vehicleCssTransform(mode, from, to) {
+            if (!from || !to) return 'rotate(0deg)';
+            if (L.latLng(from).distanceTo(L.latLng(to)) < 8) return null;
+            const heading = bearingDeg(from, to);
+            const rest = mode === 'air' ? PLANE_REST_DEG : BUS_REST_DEG;
+            let rot = heading - rest;
+            while (rot > 180) rot -= 360;
+            while (rot < -180) rot += 360;
+            // 버스는 180° 회전 시 위아래가 뒤집혀 보이므로, 서향일 때 좌우 반전
+            if (mode !== 'air' && Math.abs(rot) > 90) {
+                const flipRot = rot > 0 ? rot - 180 : rot + 180;
+                return `scaleX(-1) rotate(${flipRot}deg)`;
+            }
+            return `rotate(${rot}deg)`;
+        }
+        function vehicleIcon(mode, from, to) {
+            const emoji = mode === 'air' ? '✈️' : '🚌';
+            const transform = vehicleCssTransform(mode, from, to) || 'rotate(0deg)';
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div class="map-bus" data-mode="${mode}" style="transform:${transform}">${emoji}</div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+        }
+        function applyVehicleHeading(marker, from, to, mode) {
+            if (!marker || !from || !to) return;
+            const transform = vehicleCssTransform(mode, from, to);
+            if (!transform) return;
+            const el = marker.getElement()?.querySelector('.map-bus');
+            if (el) el.style.transform = transform;
         }
         function clearMapLayers() {
             if (activeBus) activeBus._aborted = true;
@@ -1385,7 +1418,7 @@
                 setTimeout(() => resolve(ms), ms + 40);
             });
         }
-        function moveMarkerAlong(marker, latlngs, duration) {
+        function moveMarkerAlong(marker, latlngs, duration, mode) {
             return new Promise(resolve => {
                 if (!marker || !latlngs || latlngs.length < 2) { resolve(); return; }
                 const dists = [0];
@@ -1395,6 +1428,8 @@
                     dists.push(total);
                 }
                 if (total === 0) { resolve(); return; }
+                const [h0a, h0b] = headingPair(latlngs, 0);
+                applyVehicleHeading(marker, h0a, h0b, mode);
                 const start = performance.now();
                 const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
                 function frame(now) {
@@ -1408,10 +1443,8 @@
                     const span = (dists[i] - dists[i - 1]) || 1;
                     const f = (target - dists[i - 1]) / span;
                     marker.setLatLng([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]);
-                    const heading = bearingDeg(a, b);
-                    const zeroDeg = marker._zeroDeg || 90;
-                    const el = marker.getElement()?.querySelector('.map-bus');
-                    if (el) el.style.transform = `rotate(${((heading - zeroDeg) % 360 + 360) % 360}deg)`;
+                    const [ha, hb] = headingPair(latlngs, i - 1);
+                    applyVehicleHeading(marker, ha, hb, mode || marker._mode || 'drive');
                     if (t < 1) requestAnimationFrame(frame);
                     else resolve();
                 }
@@ -1478,20 +1511,21 @@
                 mapLayers.push(marker);
             };
             const legMaxZoom = (leg) => {
-                if (leg.mode === 'air') return 6;
-                if (routeKey === 'all') return Math.min(routeData.maxZoom || 10, 10);
-                return routeData.maxZoom || 12;
+                if (leg.mode === 'air') return 5;
+                // 일본 도착 후 도로 구간은 가까이 확대해 동선 파악이 쉽게
+                if (routeKey === 'all') return 11;
+                return Math.max(routeData.maxZoom || 12, 11);
             };
             await fitPath(paths[0], legMaxZoom(legs[0]));
             if (seq !== mapDrawSeq) return;
             addPin(legs[0].from);
             const firstLeg = legs[0];
-            const firstHeading = bearingDeg(spots[firstLeg.from].coords, spots[firstLeg.to].coords);
-            const firstZero = firstLeg.mode === 'air' ? 45 : 90;
-            const firstEmoji = firstLeg.mode === 'air' ? '✈️' : '🚌';
-            const bus = L.marker(spots[firstLeg.from].coords, { icon: vehicleIcon(firstEmoji, firstHeading, firstZero), zIndexOffset: 900 }).addTo(currentMap);
+            const bus = L.marker(spots[firstLeg.from].coords, {
+                icon: vehicleIcon(firstLeg.mode, spots[firstLeg.from].coords, spots[firstLeg.to].coords),
+                zIndexOffset: 900
+            }).addTo(currentMap);
             bus._aborted = false;
-            bus._zeroDeg = firstZero;
+            bus._mode = firstLeg.mode;
             activeBus = bus;
             mapLayers.push(bus);
             for (let i = 0; i < legs.length; i++) {
@@ -1500,11 +1534,8 @@
                 const path = paths[i];
                 const meters = packed[i].meters || pathMeters(path);
                 const seconds = packed[i].seconds || estimateSeconds(meters, leg.mode);
-                const zero = leg.mode === 'air' ? 45 : 90;
-                const emoji = leg.mode === 'air' ? '✈️' : '🚌';
-                const heading = bearingDeg(path[0], path[path.length - 1]);
-                bus._zeroDeg = zero;
-                bus.setIcon(vehicleIcon(emoji, heading, zero));
+                bus._mode = leg.mode;
+                bus.setIcon(vehicleIcon(leg.mode, spots[leg.from].coords, spots[leg.to].coords));
                 bus.setLatLng(path[0]);
                 setMapDistance(leg.from, leg.to, meters, seconds, leg.mode);
                 await fitPath(path, legMaxZoom(leg));
@@ -1517,7 +1548,7 @@
                 mapLayers.push(poly);
                 const ready = await whenPathReady(poly);
                 const ms = lineDuration(ready ? ready.getTotalLength() : 400, routeKey);
-                await Promise.all([animateLine(poly, ms), moveMarkerAlong(bus, path, ms)]);
+                await Promise.all([animateLine(poly, ms), moveMarkerAlong(bus, path, ms, leg.mode)]);
                 if (seq !== mapDrawSeq) return;
                 addPin(leg.to);
                 await new Promise(r => setTimeout(r, isMobileView() ? 280 : 140));
@@ -1526,8 +1557,13 @@
             if (bus && currentMap.hasLayer(bus)) currentMap.removeLayer(bus);
             mapLayers = mapLayers.filter(layer => layer !== bus);
             if (activeBus === bus) activeBus = null;
-            currentMap.fitBounds(L.latLngBounds(routeData.points.map(k => spots[k].coords)), {
-                padding: [40, 40], maxZoom: Math.min(routeData.maxZoom || 10, 10), animate: true
+            // 종료 요약은 일본 현지 기준으로 (인천을 빼 과도한 축소 방지)
+            const finalKeys = routeData.points.filter(k => k !== 'icn');
+            const overviewKeys = finalKeys.length ? finalKeys : routeData.points;
+            currentMap.fitBounds(L.latLngBounds(overviewKeys.map(k => spots[k].coords)), {
+                padding: [40, 40],
+                maxZoom: routeKey === 'all' ? 8 : Math.min(routeData.maxZoom || 11, 11),
+                animate: true
             });
             setTimeout(() => currentMap.invalidateSize(), 160);
         }
