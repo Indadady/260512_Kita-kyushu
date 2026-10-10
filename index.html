@@ -22,34 +22,50 @@
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Leaflet CSS (Map) -->
+    <!-- Leaflet + MapLibre CSS (Map) -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link href="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.css" rel="stylesheet" />
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Nanum+Myeongjo:wght@700&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
 
     <style>
-        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; color: #1e293b; }
+        body { font-family: 'Noto Sans KR', sans-serif; background-color: #f8fafc; color: #1e293b; word-break: keep-all; }
         .hero-bg { 
             background: linear-gradient(rgba(0, 50, 20, 0.6), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1596328362879-16472d76d400?q=80&w=1920&auto=format&fit=crop');
             background-size: cover; background-position: center; background-attachment: fixed;
         }
         @media (max-width: 768px){ .hero-bg { background-attachment: scroll; } }
         #map { height: 500px; width: 100%; border-radius: 1rem; box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); z-index: 10; }
+        .leaflet-maplibre-gl { z-index: 0 !important; }
+        .custom-icon { background: transparent; border: none; }
+        .map-pin-wrap { display: flex; flex-direction: column; align-items: center; }
+        .map-pin-dot {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 15px; color: #fff;
+            border: 2px solid rgba(255,255,255,0.95);
+            box-shadow: 0 8px 16px rgba(15,23,42,0.18);
+        }
+        .map-pin-label {
+            margin-top: 3px; background: rgba(255,255,255,0.96); color: #0f172a;
+            font-size: 10px; font-weight: 800; letter-spacing: -0.04em; line-height: 1.2;
+            padding: 2px 6px; border-radius: 6px; white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(15,23,42,0.12);
+        }
+        .map-bus {
+            font-size: 22px; line-height: 1;
+            filter: drop-shadow(0 4px 8px rgba(15,23,42,0.35));
+            transform-origin: center center; display: inline-block;
+        }
+        @media (max-width: 768px) { #map { height: 440px; } }
         .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         .animate-fade-in-up { animation: fadeInUp 0.8s ease-out forwards; }
         @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
         section { scroll-margin-top: 80px; }
-        
-        .custom-icon div {
-            box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-        .custom-icon div:hover {
-            transform: scale(1.1);
-            z-index: 100;
-        }
+        body.event-day section { scroll-margin-top: 148px; }
         
         .timeline-dot {
             position: absolute;
@@ -130,9 +146,22 @@
                     </div>
                 </div>
 
-                <button onclick="shareLink()" class="shrink-0 p-2 text-slate-500 hover:text-emerald-600 ml-2" title="제안서 공유하기"><i class="fa-solid fa-share-nodes text-xl"></i></button>
+                <button type="button" onclick="shareLink()" class="shrink-0 p-2 text-slate-500 hover:text-emerald-600 ml-2" title="제안서 공유하기"><i class="fa-solid fa-share-nodes text-xl"></i></button>
             </nav>
         </header>
+
+        <div id="event-day-bar" class="hidden sticky top-16 z-40 bg-white/95 backdrop-blur-md border-b border-emerald-100 shadow-sm">
+            <div class="container mx-auto px-4 py-2.5">
+                <div class="grid grid-cols-2 gap-2 max-w-lg mx-auto">
+                    <button type="button" onclick="goToTodaySchedule()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border-2 border-emerald-600 bg-emerald-600 text-white font-bold text-sm shadow-sm active:scale-95 transition">
+                        <i class="fa-solid fa-calendar-day"></i> 오늘의 일정
+                    </button>
+                    <button type="button" onclick="goToTodayRoute()" class="flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border-2 border-slate-300 bg-white text-slate-700 font-bold text-sm shadow-sm active:scale-95 transition">
+                        <i class="fa-solid fa-route"></i> 당일 동선
+                    </button>
+                </div>
+            </div>
+        </div>
 
         <!-- Hero -->
         <section id="home" class="hero-bg min-h-[65vh] flex items-center justify-center text-center px-4">
@@ -152,7 +181,8 @@
                     <p class="text-lg md:text-xl text-slate-100 font-medium tracking-wide">
                         정선군청 환경과 | 6명 단독 행사
                     </p>
-                    <p class="text-md text-emerald-300 font-bold mt-1">2026.05.12(화) ~ 05.15(금) [3박 4일]</p>
+                    <p id="hero-date" class="text-md text-emerald-300 font-bold mt-1">2026.05.12(화) ~ 05.15(금) [3박 4일]</p>
+                    <p id="hero-desc" class="text-xs text-slate-200 mt-1 hidden"></p>
                 </div>
             </div>
         </section>
@@ -235,19 +265,23 @@
                 <div class="text-center mb-8">
                     <span class="text-emerald-600 font-black tracking-widest text-xs uppercase">ROUTING MAP</span>
                     <h2 class="text-3xl font-bold text-slate-800 tracking-tight mt-2">연수 및 탐방 동선</h2>
-                    <p class="text-slate-500 mt-2">일자별 버튼을 클릭하여 전체 이동 경로와 숙소 위치를 확인하세요.</p>
+                    <p class="text-slate-500 mt-2">일자별 버튼을 눌러 실제 도로 동선과 숙소 위치를 확인하세요.</p>
+                    <p id="map-hint" class="text-slate-400 mt-1 text-xs">전체 여정 — 인천 ↔ 기타큐슈 항공 및 현지 차량 동선</p>
                 </div>
 
                 <div class="flex flex-wrap justify-center gap-2 mb-6 px-2" id="map-controls">
-                    <button onclick="changeMapRoute('all')" class="map-btn active px-5 py-2 rounded-full border border-slate-300 bg-emerald-700 text-white text-sm font-bold transition shadow-md">전체 여정</button>
-                    <button onclick="changeMapRoute('day1')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">1일차</button>
-                    <button onclick="changeMapRoute('day2')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">2일차(기관방문)</button>
-                    <button onclick="changeMapRoute('day3')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">3일차(생태보전)</button>
-                    <button onclick="changeMapRoute('day4')" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">4일차(지질·수문)</button>
+                    <button type="button" onclick="filterMap('all')" id="btn-map-all" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-emerald-700 text-white text-sm font-bold transition shadow-md">전체 여정</button>
+                    <button type="button" onclick="filterMap('day1')" id="btn-map-day1" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">1일차</button>
+                    <button type="button" onclick="filterMap('day2')" id="btn-map-day2" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">2일차(기관방문)</button>
+                    <button type="button" onclick="filterMap('day3')" id="btn-map-day3" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">3일차(생태보전)</button>
+                    <button type="button" onclick="filterMap('day4')" id="btn-map-day4" class="map-btn px-5 py-2 rounded-full border border-slate-300 bg-white text-slate-600 hover:bg-emerald-50 text-sm font-bold transition">4일차(지질·수문)</button>
                 </div>
 
-                <div class="max-w-5xl mx-auto border border-slate-200 rounded-2xl p-1 shadow-lg bg-white relative">
+                <div class="max-w-5xl mx-auto border border-slate-200 rounded-2xl p-1 shadow-lg bg-white relative z-0">
                     <div id="map"></div>
+                    <div id="map-status" class="absolute top-3 left-3 z-[400] max-w-[72%] sm:max-w-xs bg-white/90 backdrop-blur px-3 py-1.5 rounded-xl shadow font-bold text-xs text-slate-700 leading-snug pointer-events-none">
+                        <i class="fa-solid fa-route text-emerald-600 mr-1"></i><span id="map-status-text">실제 도로 동선</span>
+                    </div>
                 </div>
             </div>
         </section>
@@ -257,27 +291,30 @@
             <div class="container mx-auto px-4">
                 <div class="max-w-5xl mx-auto">
                     
-                    <div class="text-center mb-10 relative">
-                        <span class="inline-block bg-emerald-100 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold shadow-sm mb-3">OFFICIAL ITINERARY</span>
-                        <h2 class="text-3xl font-bold text-slate-800">일자별 상세 일정표</h2>
-                        <p class="text-slate-500 mt-2 text-sm">※ 스마트폰에서는 동선을 간략히 보시고, 상세 시간표는 아래 버튼으로 인쇄해주세요.</p>
-                        
-                        <!-- 🖨️ 공무원 결재 서류용 인쇄 버튼 -->
-                        <button onclick="window.print()" class="mt-6 md:mt-0 md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 bg-slate-800 hover:bg-slate-700 text-white text-sm font-bold py-2.5 px-5 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 mx-auto md:mx-0 active:scale-95 animate-pulse">
-                            <i class="fa-solid fa-print"></i> 일정표 인쇄하기
-                        </button>
+                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+                        <div class="text-center sm:text-left">
+                            <span class="inline-block bg-emerald-100 text-emerald-800 text-xs px-3 py-1 rounded-full font-bold shadow-sm mb-3">OFFICIAL ITINERARY</span>
+                            <h2 class="text-3xl font-bold text-slate-800">일자별 상세 일정표</h2>
+                            <p class="text-slate-500 mt-2 text-sm">탭을 눌러 일자별 상세 내용을 확인하세요.</p>
+                        </div>
+                        <div class="text-center sm:text-right shrink-0">
+                            <button type="button" onclick="handlePrint()" class="inline-flex items-center justify-center gap-1.5 bg-slate-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-md hover:bg-slate-700">
+                                <i class="fa-solid fa-print"></i> 일정표 인쇄하기
+                            </button>
+                            <p class="mt-2 text-xs text-slate-500 leading-relaxed max-w-[16rem] mx-auto sm:ml-auto sm:mr-0">모바일(카카오톡 등)에서는<br>인쇄가 어려울 수 있어요.<br>다른 브라우저나 PC에서 열어 주세요.</p>
+                        </div>
                     </div>
 
                     <!-- Tabs -->
                     <div class="flex overflow-x-auto no-scrollbar gap-2 mb-8 justify-start md:justify-center px-2">
-                        <button class="tab-btn active shrink-0 px-6 py-3 rounded-2xl border-2 border-emerald-600 bg-emerald-600 text-white font-bold text-sm transition shadow-md" onclick="openTab(event, 'day1'); changeMapRoute('day1')">1일차 (5.12)</button>
-                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50 relative" onclick="openTab(event, 'day2'); changeMapRoute('day2')">
+                        <button class="tab-btn active shrink-0 px-6 py-3 rounded-2xl border-2 border-emerald-600 bg-emerald-600 text-white font-bold text-sm transition shadow-md" onclick="openTab(event, 'day1')">1일차 (5.12)</button>
+                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50 relative" onclick="openTab(event, 'day2')">
                             2일차 (5.13) <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">핵심</span>
                         </button>
-                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50 relative" onclick="openTab(event, 'day3'); changeMapRoute('day3')">
+                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50 relative" onclick="openTab(event, 'day3')">
                             3일차 (5.14) <span class="absolute -top-2 -right-2 bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full">핵심</span>
                         </button>
-                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50" onclick="openTab(event, 'day4'); changeMapRoute('day4')">4일차 (5.15)</button>
+                        <button class="tab-btn shrink-0 px-6 py-3 rounded-2xl border-2 border-slate-200 bg-white text-slate-500 font-bold text-sm transition hover:bg-emerald-50" onclick="openTab(event, 'day4')">4일차 (5.15)</button>
                     </div>
 
                     <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
@@ -923,8 +960,71 @@
 
     <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/maplibre-gl@4.7.1/dist/maplibre-gl.js"></script>
+    <script src="https://unpkg.com/@maplibre/maplibre-gl-leaflet@0.0.20/leaflet-maplibre-gl.js"></script>
     <script>
-        // Tab UI Logic
+        const TEST_DATE = "";
+        const EVENT_DAYS = {
+            '2026-05-12': 'day1',
+            '2026-05-13': 'day2',
+            '2026-05-14': 'day3',
+            '2026-05-15': 'day4'
+        };
+        const PRINT_FILENAME = '260512_기타큐슈_일정표';
+        const PAGE_TITLE = document.title;
+        window.addEventListener('beforeprint', () => { document.title = PRINT_FILENAME; });
+        window.addEventListener('afterprint', () => { document.title = PAGE_TITLE; });
+
+        function getGuidebookToday() {
+            const q = new URLSearchParams(location.search).get('test_date');
+            if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) return q;
+            if (TEST_DATE) return TEST_DATE;
+            return new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Seoul' }).format(new Date());
+        }
+        function ymdDiffDays(a, b) {
+            const [ay, am, ad] = a.split('-').map(Number);
+            const [by, bm, bd] = b.split('-').map(Number);
+            return Math.round((Date.UTC(ay, am - 1, ad) - Date.UTC(by, bm - 1, bd)) / 86400000);
+        }
+        function getTodayDayKey() {
+            return EVENT_DAYS[getGuidebookToday()] || null;
+        }
+        function activateDayTab(dayKey) {
+            const btn = document.querySelector(`.tab-btn[onclick*="'${dayKey}'"]`);
+            if (!btn || typeof openTab !== 'function') return;
+            openTab({ currentTarget: btn }, dayKey);
+        }
+        function goToTodaySchedule() {
+            const dayKey = getTodayDayKey();
+            if (dayKey) activateDayTab(dayKey);
+            document.getElementById('schedule')?.scrollIntoView({ behavior: 'smooth' });
+        }
+        function goToTodayRoute() {
+            const dayKey = getTodayDayKey();
+            if (dayKey && typeof filterMap === 'function') filterMap(dayKey);
+            document.getElementById('map-section')?.scrollIntoView({ behavior: 'smooth' });
+        }
+        function initEventDayUI() {
+            const bar = document.getElementById('event-day-bar');
+            if (!bar) return;
+            const dayKey = getTodayDayKey();
+            const isEventDay = !!dayKey;
+            bar.classList.toggle('hidden', !isEventDay);
+            document.body.classList.toggle('event-day', isEventDay);
+            if (dayKey) activateDayTab(dayKey);
+        }
+        function isInAppBrowser() {
+            const ua = navigator.userAgent.toLowerCase();
+            return /kakaotalk|naver|line\/|fbav|instagram|daumapps|everytimeapp|band\//.test(ua);
+        }
+        function handlePrint() {
+            if (isInAppBrowser()) {
+                alert('이 앱에서는 인쇄가 어려워요.\n다른 브라우저나 PC에서 열어 주세요.');
+                return;
+            }
+            window.print();
+        }
+
         function openTab(evt, tabId){
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -932,7 +1032,7 @@
                 btn.classList.add('bg-white','text-slate-500','border-slate-200');
             });
             document.getElementById(tabId)?.classList.remove('hidden');
-            if(evt) {
+            if(evt && evt.currentTarget) {
                 evt.currentTarget.classList.add('active','bg-emerald-600','text-white','border-emerald-600','shadow-md');
                 evt.currentTarget.classList.remove('bg-white','text-slate-500','border-slate-200');
             }
@@ -941,18 +1041,17 @@
         function shareLink(){
             const url = window.location.href;
             if (navigator.share) {
-                navigator.share({ 
-                    title: '[정선군청 환경과] 환경시설 벤치마킹 연수 일정표', 
-                    text: '결재 서류용 양식이 완벽히 포함된 선진 환경시설 벤치마킹 연수 제안서입니다.',
-                    url: url 
+                navigator.share({
+                    title: '[정선군청 환경과] 환경시설 벤치마킹 연수 일정표',
+                    text: '선진 환경시설 벤치마킹 연수 스마트 가이드북입니다.',
+                    url: url
                 }).catch(()=>{});
             } else {
                 navigator.clipboard?.writeText(url).then(()=>alert('제안서 링크가 복사되었습니다. 카카오톡 등으로 공유해주세요.'));
             }
         }
 
-        // Checklist Logic
-        const CHECK_KEY = 'jeongseon_eco_checklist_v1'; 
+        const CHECK_KEY = 'jeongseon_eco_checklist_v1';
         const CHECK_ITEMS = [
             '여권 (유효기간 6개월 이상 필수 확인)',
             '기관 명함 및 소속 기관 홍보자료 (교류용)',
@@ -979,7 +1078,6 @@
                     </label>
                 `;
             }).join('');
-
             container.querySelectorAll('input[type=checkbox]').forEach(cb => {
                 cb.addEventListener('change', () => {
                     const currentSaved = JSON.parse(localStorage.getItem(CHECK_KEY) || '{}');
@@ -988,7 +1086,6 @@
                 });
             });
         }
-        
         function resetChecklist(){
             if(confirm('체크리스트를 초기화하시겠습니까?\n체크된 항목이 모두 해제됩니다.')){
                 localStorage.removeItem(CHECK_KEY);
@@ -997,11 +1094,10 @@
         }
         renderChecklist();
 
-        // Memo Logic
         (function(){
             const memo = document.getElementById('travel-memo');
             if(!memo) return;
-            const KEY = 'jeongseon_eco_memo_v1'; 
+            const KEY = 'jeongseon_eco_memo_v1';
             const autoResize = () => {
                 memo.style.height = 'auto';
                 memo.style.height = memo.scrollHeight + 'px';
@@ -1015,131 +1111,351 @@
             window.addEventListener('resize', autoResize);
         })();
 
-        // Map Route & Layer Logic
-        let map;
+        (function initDateLogic() {
+            const today = getGuidebookToday();
+            const start = '2026-05-12';
+            const end = '2026-05-15';
+            const badge = document.getElementById('d-day-badge');
+            const heroDesc = document.getElementById('hero-desc');
+            const heroDate = document.getElementById('hero-date');
+            if (!badge) return;
+            badge.classList.remove('hidden');
+            if (today < start) {
+                badge.textContent = `D-${ymdDiffDays(start, today)}`;
+                badge.className = 'bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse';
+            } else if (today <= end) {
+                const dayCount = ymdDiffDays(today, start) + 1;
+                badge.textContent = `📍 ${dayCount}일차 진행중`;
+                badge.className = 'bg-red-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold animate-pulse';
+                if (heroDesc) {
+                    heroDesc.classList.remove('hidden');
+                    heroDesc.innerHTML = `현재 <strong>정선군청 환경과</strong>의 <strong>${dayCount}일차</strong> 여정이 진행되고 있습니다.`;
+                }
+            } else {
+                badge.textContent = '🏁 여정 종료';
+                badge.className = 'bg-slate-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold';
+                if (heroDate) heroDate.textContent = '모든 여정이 종료되었습니다.';
+                if (heroDesc) {
+                    heroDesc.classList.remove('hidden');
+                    heroDesc.textContent = '좋은 추억으로 오래 간직되길 바랍니다.';
+                }
+            }
+        })();
+
+        initEventDayUI();
+
+        let mapInited = false;
+        let currentMap = null;
         let mapLayers = [];
-
-        const spots = {
-            kkj: { coords: [33.8385, 130.9472], title: "기타큐 공항", color: "#64748b", icon: "✈️" },
-            hotel_mojiko: { coords: [33.945, 130.963], title: "1일차 숙소 (모지코)", color: "#1e293b", icon: "🏨", isSub: true },
-            shinmoji: { coords: [33.911, 131.002], title: "신모지 소각장", color: "#dc2626", icon: "🏭", isSub: true },
-            ecotown: { coords: [33.924, 130.826], title: "기타큐슈 에코타운", color: "#dc2626", icon: "♻️", isSub: true },
-            beppu_tour: { coords: [33.315, 131.472], title: "벳부 지옥온천/유노하나", color: "#2563eb", icon: "♨️", isSub: true },
-            hotel_fugetsu: { coords: [33.308, 131.482], title: "2일차 숙소 (벳부 풍월)", color: "#1e293b", icon: "🏨", isSub: true },
-            yufuin: { coords: [33.264, 131.361], title: "유후인 긴린코 호수", color: "#f59e0b", icon: "🏞️", isSub: true },
-            kokonoe: { coords: [33.111, 131.233], title: "타데하라습지", color: "#f59e0b", icon: "🌿", isSub: true },
-            fukuoka_clean: { coords: [33.626, 130.435], title: "후쿠오카 클린파크 린카이", color: "#dc2626", icon: "♻️", isSub: true },
-            hotel_munakata: { coords: [33.805, 130.540], title: "3일차 숙소 (무나가타)", color: "#1e293b", icon: "🏨", isSub: true },
-            kokura: { coords: [33.883, 130.873], title: "고쿠라성", color: "#16a34a", icon: "🏯", isSub: true },
-            shimonoseki: { coords: [33.957, 130.943], title: "가라토 시장/아카마 신궁", color: "#16a34a", icon: "🤝", isSub: true },
-            mine: { coords: [34.240, 131.300], title: "미네 (아키요시다이)", color: "#16a34a", icon: "🪨", isSub: true }
+        let mapDrawSeq = 0;
+        let activeBus = null;
+        const osrmCache = {};
+        const mapHints = {
+            all: '전체 여정 — 인천 ↔ 기타큐슈 항공(점선) + 현지 차량 동선',
+            day1: '1일차 동선 — 인천 → 기타큐슈공항 → 모지코 숙소',
+            day2: '2일차 동선 — 모지코 → 신모지 → 환경뮤지엄 → 에코타운 → 벳부',
+            day3: '3일차 동선 — 벳부 → 유후인 → 타데하라 → 클린파크 → 무나가타',
+            day4: '4일차 동선 — 무나가타 → 고쿠라 → 시모노세키 → 아키요시다이 → 공항 → 인천'
         };
-
+        const spots = {
+            icn: { coords: [37.4602, 126.4407], title: '인천공항', color: '#1e293b', icon: '✈️' },
+            kkj: { coords: [33.8459, 131.0350], title: '기타큐슈 공항', color: '#64748b', icon: '✈️' },
+            hotel_mojiko: { coords: [33.945, 130.963], title: '1일차 숙소 (모지코)', color: '#1e293b', icon: '🏨' },
+            shinmoji: { coords: [33.911, 131.002], title: '신모지 소각장', color: '#dc2626', icon: '🏭' },
+            env_museum: { coords: [33.8667, 130.8103], title: '환경뮤지엄', color: '#dc2626', icon: '🏛️' },
+            ecotown: { coords: [33.924, 130.826], title: '기타큐슈 에코타운', color: '#dc2626', icon: '♻️' },
+            beppu_tour: { coords: [33.315, 131.472], title: '벳부 지옥온천/유노하나', color: '#2563eb', icon: '♨️' },
+            hotel_fugetsu: { coords: [33.308, 131.482], title: '2일차 숙소 (벳부)', color: '#1e293b', icon: '🏨' },
+            yufuin: { coords: [33.264, 131.361], title: '유후인 긴린코', color: '#f59e0b', icon: '🏞️' },
+            kokonoe: { coords: [33.111, 131.233], title: '타데하라습지', color: '#f59e0b', icon: '🌿' },
+            fukuoka_clean: { coords: [33.626, 130.435], title: '클린파크 린카이', color: '#dc2626', icon: '♻️' },
+            hotel_munakata: { coords: [33.805, 130.540], title: '3일차 숙소 (무나가타)', color: '#1e293b', icon: '🏨' },
+            kokura: { coords: [33.883, 130.873], title: '고쿠라성', color: '#16a34a', icon: '🏯' },
+            shimonoseki: { coords: [33.957, 130.943], title: '가라토/아카마', color: '#16a34a', icon: '🤝' },
+            mine: { coords: [34.240, 131.300], title: '아키요시다이', color: '#16a34a', icon: '🪨' }
+        };
         const routes = {
             all: {
-                points: ['kkj', 'hotel_mojiko', 'shinmoji', 'ecotown', 'beppu_tour', 'hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata', 'kokura', 'shimonoseki', 'mine'],
+                points: ['icn', 'kkj', 'hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata', 'kokura', 'shimonoseki', 'mine'],
+                maxZoom: 7,
                 lines: [
-                    { latlngs: [spots.kkj.coords, spots.hotel_mojiko.coords], color: '#64748b', dash: '' },
-                    { latlngs: [spots.hotel_mojiko.coords, spots.shinmoji.coords, spots.ecotown.coords, spots.beppu_tour.coords, spots.hotel_fugetsu.coords], color: '#2563eb', dash: '' },
-                    { latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka_clean.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' },
-                    { latlngs: [spots.hotel_munakata.coords, spots.kokura.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }
+                    { pts: ['icn', 'kkj'], color: '#64748b', mode: 'air' },
+                    { pts: ['kkj', 'hotel_mojiko'], color: '#64748b' },
+                    { pts: ['hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu'], color: '#2563eb' },
+                    { pts: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata'], color: '#f59e0b' },
+                    { pts: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj'], color: '#16a34a' },
+                    { pts: ['kkj', 'icn'], color: '#64748b', mode: 'air' }
                 ]
             },
             day1: {
-                points: ['kkj', 'hotel_mojiko'],
-                lines: [{ latlngs: [spots.kkj.coords, spots.hotel_mojiko.coords], color: '#64748b', dash: '' }]
+                points: ['icn', 'kkj', 'hotel_mojiko'],
+                maxZoom: 6,
+                lines: [
+                    { pts: ['icn', 'kkj'], color: '#64748b', mode: 'air' },
+                    { pts: ['kkj', 'hotel_mojiko'], color: '#64748b' }
+                ]
             },
             day2: {
-                points: ['hotel_mojiko', 'shinmoji', 'ecotown', 'beppu_tour', 'hotel_fugetsu'],
-                lines: [{ latlngs: [spots.hotel_mojiko.coords, spots.shinmoji.coords, spots.ecotown.coords, spots.beppu_tour.coords, spots.hotel_fugetsu.coords], color: '#2563eb', dash: '' }]
+                points: ['hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu'],
+                maxZoom: 9,
+                lines: [{ pts: ['hotel_mojiko', 'shinmoji', 'env_museum', 'ecotown', 'beppu_tour', 'hotel_fugetsu'], color: '#2563eb' }]
             },
             day3: {
                 points: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata'],
-                lines: [{ latlngs: [spots.hotel_fugetsu.coords, spots.yufuin.coords, spots.kokonoe.coords, spots.fukuoka_clean.coords, spots.hotel_munakata.coords], color: '#f59e0b', dash: '' }]
+                maxZoom: 9,
+                lines: [{ pts: ['hotel_fugetsu', 'yufuin', 'kokonoe', 'fukuoka_clean', 'hotel_munakata'], color: '#f59e0b' }]
             },
             day4: {
-                points: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj'],
-                lines: [{ latlngs: [spots.hotel_munakata.coords, spots.kokura.coords, spots.shimonoseki.coords, spots.mine.coords, spots.kkj.coords], color: '#16a34a', dash: '' }]
+                points: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj', 'icn'],
+                maxZoom: 7,
+                lines: [
+                    { pts: ['hotel_munakata', 'kokura', 'shimonoseki', 'mine', 'kkj'], color: '#16a34a' },
+                    { pts: ['kkj', 'icn'], color: '#64748b', mode: 'air' }
+                ]
             }
         };
-
-        function drawMap(routeKey) {
-            if (!map) return;
-            mapLayers.forEach(layer => map.removeLayer(layer));
-            mapLayers = [];
-            const routeData = routes[routeKey];
-            
-            routeData.lines.forEach((lineDef) => {
-                const polyline = L.polyline(lineDef.latlngs, { color: lineDef.color, weight: 4, opacity: 0.8, dashArray: lineDef.dash }).addTo(map);
-                setTimeout(() => {
-                    const path = polyline.getElement();
-                    if (path && lineDef.dash === '') { 
-                        const length = path.getTotalLength();
-                        path.style.transition = 'none';
-                        path.style.strokeDasharray = length + ' ' + length;
-                        path.style.strokeDashoffset = length;
-                        path.getBoundingClientRect(); 
-                        path.style.transition = 'stroke-dashoffset 2s ease-in-out';
-                        path.style.strokeDashoffset = '0';
-                    }
-                }, 50);
-                mapLayers.push(polyline);
-            });
-
-            let currentBounds = L.latLngBounds();
-            routeData.points.forEach(key => {
-                const spot = spots[key];
-                const size = spot.isSub ? 24 : 28;
-                const fontSize = spot.isSub ? 10 : 12;
-                const icon = L.divIcon({
-                    className: 'custom-icon',
-                    html: `<div style="background-color:${spot.color}; width:${size}px; height:${size}px; border-radius:50%; border:2px solid white; color:white; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:${fontSize}px;">${spot.icon}</div>`,
-                    iconSize: [size, size]
-                });
-                const marker = L.marker(spot.coords, {icon: icon}).addTo(map).bindPopup(`<b>${spot.title}</b>`);
-                mapLayers.push(marker);
-                currentBounds.extend(spot.coords);
-            });
-            map.fitBounds(currentBounds, { padding: [50, 50], maxZoom: 11 });
+        function isMobileView() { return window.matchMedia('(max-width: 768px)').matches; }
+        function setMapStatus(text) {
+            const el = document.getElementById('map-status-text');
+            if (el) el.textContent = text;
         }
-
-        function changeMapRoute(dayKey) {
+        function pinIcon(spot) {
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div class="map-pin-wrap"><div class="map-pin-dot" style="background:${spot.color};">${spot.icon}</div><span class="map-pin-label">${spot.title}</span></div>`,
+                iconSize: [96, 52],
+                iconAnchor: [48, 16]
+            });
+        }
+        function vehicleIcon(emoji, heading, zeroDeg) {
+            const rot = ((heading - zeroDeg) % 360 + 360) % 360;
+            return L.divIcon({
+                className: 'custom-icon',
+                html: `<div class="map-bus" data-zero="${zeroDeg}" style="transform:rotate(${rot}deg)">${emoji}</div>`,
+                iconSize: [28, 28],
+                iconAnchor: [14, 14]
+            });
+        }
+        function bearingDeg(from, to) {
+            const lat1 = from[0] * Math.PI / 180;
+            const lat2 = to[0] * Math.PI / 180;
+            const dLng = (to[1] - from[1]) * Math.PI / 180;
+            const y = Math.sin(dLng) * Math.cos(lat2);
+            const x = Math.cos(lat1) * Math.sin(lat2) - Math.sin(lat1) * Math.cos(lat2) * Math.cos(dLng);
+            return (Math.atan2(y, x) * 180 / Math.PI + 360) % 360;
+        }
+        function clearMapLayers() {
+            if (activeBus) activeBus._aborted = true;
+            activeBus = null;
+            mapLayers.forEach(layer => {
+                if (layer._aborted !== undefined) layer._aborted = true;
+                currentMap.removeLayer(layer);
+            });
+            mapLayers = [];
+        }
+        async function roadPath(pts) {
+            const key = pts.map(p => p.join(',')).join('|');
+            if (osrmCache[key]) return osrmCache[key];
+            try {
+                const coords = pts.map(p => `${p[1]},${p[0]}`).join(';');
+                const res = await fetch(`https://router.project-osrm.org/route/v1/driving/${coords}?overview=full&geometries=geojson`);
+                const data = await res.json();
+                if (data.code === 'Ok' && data.routes && data.routes[0]) {
+                    const path = data.routes[0].geometry.coordinates.map(([lng, lat]) => [lat, lng]);
+                    osrmCache[key] = path;
+                    return path;
+                }
+            } catch (e) { /* straight fallback */ }
+            return pts;
+        }
+        function lineDuration(pixelLength, routeKey) {
+            const mobile = isMobileView();
+            const allView = routeKey === 'all';
+            const min = mobile ? (allView ? 1600 : 2800) : (allView ? 900 : 1400);
+            const max = mobile ? (allView ? 2800 : 5600) : (allView ? 1800 : 2800);
+            const pxPerMs = mobile ? (allView ? 0.22 : 0.12) : 0.28;
+            return Math.max(min, Math.min(max, pixelLength / pxPerMs));
+        }
+        function whenPathReady(polyline) {
+            return new Promise(resolve => {
+                let tries = 24;
+                const tick = () => {
+                    const el = polyline.getElement();
+                    if (el && typeof el.getTotalLength === 'function') resolve(el);
+                    else if (tries-- > 0) requestAnimationFrame(tick);
+                    else resolve(null);
+                };
+                requestAnimationFrame(tick);
+            });
+        }
+        function animateLine(polyline, duration) {
+            return new Promise(async resolve => {
+                const path = await whenPathReady(polyline);
+                if (!path) { resolve(duration); return; }
+                const length = path.getTotalLength();
+                const ms = duration || 1400;
+                path.style.transition = 'none';
+                path.style.strokeDasharray = length + ' ' + length;
+                path.style.strokeDashoffset = String(length);
+                path.getBoundingClientRect();
+                path.style.transition = `stroke-dashoffset ${ms}ms ease-in-out`;
+                path.style.strokeDashoffset = '0';
+                setTimeout(() => resolve(ms), ms + 40);
+            });
+        }
+        function moveMarkerAlong(marker, latlngs, duration) {
+            return new Promise(resolve => {
+                if (!marker || !latlngs || latlngs.length < 2) { resolve(); return; }
+                const dists = [0];
+                let total = 0;
+                for (let i = 1; i < latlngs.length; i++) {
+                    total += L.latLng(latlngs[i - 1]).distanceTo(L.latLng(latlngs[i]));
+                    dists.push(total);
+                }
+                if (total === 0) { resolve(); return; }
+                const start = performance.now();
+                const ease = t => t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+                function frame(now) {
+                    if (marker._aborted) { resolve(); return; }
+                    const t = Math.min(1, (now - start) / duration);
+                    const target = total * ease(t);
+                    let i = 1;
+                    while (i < dists.length && dists[i] < target) i++;
+                    const a = latlngs[i - 1];
+                    const b = latlngs[Math.min(i, latlngs.length - 1)];
+                    const span = (dists[i] - dists[i - 1]) || 1;
+                    const f = (target - dists[i - 1]) / span;
+                    marker.setLatLng([a[0] + (b[0] - a[0]) * f, a[1] + (b[1] - a[1]) * f]);
+                    const heading = bearingDeg(a, b);
+                    const zeroDeg = marker._zeroDeg || 90;
+                    const el = marker.getElement()?.querySelector('.map-bus');
+                    if (el) el.style.transform = `rotate(${((heading - zeroDeg) % 360 + 360) % 360}deg)`;
+                    if (t < 1) requestAnimationFrame(frame);
+                    else resolve();
+                }
+                requestAnimationFrame(frame);
+            });
+        }
+        async function drawMap(routeKey) {
+            if (!currentMap) return;
+            const seq = ++mapDrawSeq;
+            clearMapLayers();
+            const routeData = routes[routeKey] || routes.all;
+            const hint = mapHints[routeKey] || '';
+            const hintEl = document.getElementById('map-hint');
+            if (hintEl) hintEl.textContent = hint;
+            setMapStatus('실제 도로 동선을 불러오는 중...');
+            const bounds = L.latLngBounds(routeData.points.map(key => spots[key].coords));
+            currentMap.fitBounds(bounds, { padding: [50, 50], maxZoom: routeData.maxZoom || 11 });
+            setTimeout(() => currentMap.invalidateSize(), 120);
+            const legs = [];
+            routeData.lines.forEach(lineDef => {
+                for (let i = 0; i < lineDef.pts.length - 1; i++) {
+                    legs.push({ from: lineDef.pts[i], to: lineDef.pts[i + 1], color: lineDef.color, mode: lineDef.mode || 'drive' });
+                }
+            });
+            const paths = await Promise.all(legs.map(leg => {
+                if (leg.mode === 'air') return Promise.resolve([spots[leg.from].coords, spots[leg.to].coords]);
+                return roadPath([spots[leg.from].coords, spots[leg.to].coords]);
+            }));
+            if (seq !== mapDrawSeq) return;
+            paths.forEach(path => path.forEach(pt => bounds.extend(pt)));
+            currentMap.fitBounds(bounds, { padding: [50, 50], maxZoom: routeData.maxZoom || 11 });
+            await new Promise(r => setTimeout(r, 280));
+            if (seq !== mapDrawSeq) return;
+            const ghostPts = paths.filter((_, i) => legs[i].mode !== 'air').flat();
+            if (ghostPts.length) {
+                const ghost = L.polyline(ghostPts, { color: '#94a3b8', weight: 4, opacity: 0.22, lineJoin: 'round', lineCap: 'round' }).addTo(currentMap);
+                mapLayers.push(ghost);
+            }
+            const placed = new Set();
+            const addPin = (key) => {
+                if (!key || placed.has(key)) return;
+                placed.add(key);
+                const spot = spots[key];
+                const marker = L.marker(spot.coords, { icon: pinIcon(spot), zIndexOffset: 200 })
+                    .addTo(currentMap)
+                    .bindTooltip(spot.title, { direction: 'top', offset: [0, -16] });
+                mapLayers.push(marker);
+            };
+            addPin(legs[0].from);
+            const firstLeg = legs[0];
+            const firstHeading = bearingDeg(spots[firstLeg.from].coords, spots[firstLeg.to].coords);
+            const firstZero = firstLeg.mode === 'air' ? 45 : 90;
+            const firstEmoji = firstLeg.mode === 'air' ? '✈️' : '🚌';
+            const bus = L.marker(spots[firstLeg.from].coords, { icon: vehicleIcon(firstEmoji, firstHeading, firstZero), zIndexOffset: 900 }).addTo(currentMap);
+            bus._aborted = false;
+            bus._zeroDeg = firstZero;
+            activeBus = bus;
+            mapLayers.push(bus);
+            for (let i = 0; i < legs.length; i++) {
+                if (seq !== mapDrawSeq) return;
+                const leg = legs[i];
+                const path = paths[i];
+                const zero = leg.mode === 'air' ? 45 : 90;
+                const emoji = leg.mode === 'air' ? '✈️' : '🚌';
+                const heading = bearingDeg(path[0], path[path.length - 1]);
+                bus._zeroDeg = zero;
+                bus.setIcon(vehicleIcon(emoji, heading, zero));
+                bus.setLatLng(path[0]);
+                setMapStatus(`${spots[leg.from].title} → ${spots[leg.to].title}`);
+                const poly = L.polyline(path, {
+                    color: leg.color, weight: leg.mode === 'air' ? 3 : 5, opacity: 0.95,
+                    dashArray: leg.mode === 'air' ? '10 8' : null,
+                    lineJoin: 'round', lineCap: 'round'
+                }).addTo(currentMap);
+                mapLayers.push(poly);
+                const ready = await whenPathReady(poly);
+                const ms = lineDuration(ready ? ready.getTotalLength() : 400, routeKey);
+                await Promise.all([animateLine(poly, ms), moveMarkerAlong(bus, path, ms)]);
+                if (seq !== mapDrawSeq) return;
+                addPin(leg.to);
+                await new Promise(r => setTimeout(r, isMobileView() ? 280 : 140));
+            }
+            if (seq !== mapDrawSeq) return;
+            setMapStatus(hint);
+            if (bus && currentMap.hasLayer(bus)) currentMap.removeLayer(bus);
+            mapLayers = mapLayers.filter(layer => layer !== bus);
+            if (activeBus === bus) activeBus = null;
+            setTimeout(() => currentMap.invalidateSize(), 160);
+        }
+        function setMapBtnActive(day) {
             document.querySelectorAll('.map-btn').forEach(btn => {
-                btn.classList.remove('active', 'bg-emerald-700', 'text-white', 'shadow-md');
+                btn.classList.remove('bg-emerald-700', 'bg-slate-800', 'text-white', 'shadow-md');
                 btn.classList.add('bg-white', 'text-slate-600');
             });
-            const clickedBtn = document.querySelector(`.map-btn[onclick="changeMapRoute('${dayKey}')"]`);
-            if(clickedBtn){
-                clickedBtn.classList.add('active', 'bg-emerald-700', 'text-white', 'shadow-md');
-                clickedBtn.classList.remove('bg-white', 'text-slate-600');
+            const targetBtn = document.getElementById('btn-map-' + day);
+            if (targetBtn) {
+                targetBtn.classList.remove('bg-white', 'text-slate-600');
+                targetBtn.classList.add('bg-emerald-700', 'text-white', 'shadow-md');
             }
-            drawMap(dayKey);
         }
-
-        let mapInited = false;
-        function initMap(){
-            if(mapInited || !window.L) return;
+        function initMap(initialKey) {
+            if (mapInited || !window.L) return;
             mapInited = true;
-            map = L.map('map', { scrollWheelZoom:false });
-            L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
-                attribution: '&copy; OpenStreetMap &copy; CARTO',
-                maxZoom: 19
-            }).addTo(map);
-            drawMap('all');
+            currentMap = L.map('map', { scrollWheelZoom: false, zoomControl: false });
+            L.control.zoom({ position: 'bottomleft' }).addTo(currentMap);
+            if (typeof L.maplibreGL === 'function') {
+                L.maplibreGL({ style: 'https://tiles.openfreemap.org/styles/positron' }).addTo(currentMap);
+            } else {
+                L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', {
+                    maxZoom: 19, attribution: 'Tiles &copy; Esri'
+                }).addTo(currentMap);
+            }
+            const startKey = initialKey || getTodayDayKey() || (isMobileView() ? 'day1' : 'all');
+            setMapBtnActive(startKey);
+            drawMap(startKey);
         }
-
-        // D-Day Logic
-        const depart = new Date('2026-05-12');
-        const diff = Math.ceil((depart - new Date()) / (1000*60*60*24));
-        const badge = document.getElementById('d-day-badge');
-        badge.textContent = diff > 0 ? `D-${diff}` : (diff === 0 ? 'D-DAY' : `D+${Math.abs(diff)}`);
-        badge.classList.remove('hidden');
-
-        // Lazy load map
-        const io = new IntersectionObserver((entries)=>{
-            if(entries[0].isIntersecting) { initMap(); io.disconnect(); }
+        window.filterMap = function(day) {
+            setMapBtnActive(day);
+            if (!currentMap) { initMap(day); return; }
+            drawMap(day);
+        };
+        const io = new IntersectionObserver((entries) => {
+            if (entries[0].isIntersecting) { initMap(); io.disconnect(); }
         }, { threshold: 0.1 });
-        io.observe(document.getElementById('map-section'));
+        const mapSection = document.getElementById('map-section');
+        if (mapSection) io.observe(mapSection);
     </script>
 </body>
 </html>
